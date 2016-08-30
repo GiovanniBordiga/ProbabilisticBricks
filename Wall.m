@@ -12,6 +12,30 @@ displayWall::usage="displayWall[] generates a drawing of the wall showing the st
 Begin["`Private`"];
 
 
+findStartBlocks[]:=Module[{j,prev,next,signs},
+startBlocks={1};
+signs={Sign[Total[loads[[2;;6;;2]]]]};
+For[j=2,j<=nelx,j++,
+prev=Sign[Total[loads[[6(j-1-1)+2;;6(j-1);;2]]]];
+next=Sign[Total[loads[[6(j-1)+2;;6j;;2]]]];
+If[prev next<=0&&next!=0,
+AppendTo[signs,next];
+AppendTo[startBlocks,j-1];
+AppendTo[startBlocks,j];
+];
+];
+AppendTo[startBlocks,nelx];
+startBlocks=Partition[startBlocks,2];
+For[j=1,j<=Length[signs],j++,
+If[signs[[j]]<0,
+startBlocks[[j,{1,2}]]=startBlocks[[j,{2,1}]];
+];
+];
+
+startBlocks
+];
+
+
 getBlockLoads[blockPos_]:=Module[{pvnew,Ns,Ts,Ncs,Tcs,Ncd,Tcd,Nd,Td,nBlock,blockULPos,blockURPos,nBlockUL,nBlockUR},
 nBlock=(blockPos[[1]]-1)nelx+blockPos[[2]];
 
