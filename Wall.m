@@ -12,12 +12,23 @@ displayWall::usage="displayWall[] generates a drawing of the wall showing the st
 Begin["`Private`"];
 
 
-findStartBlocks[]:=Module[{j,prev,next,signs},
+getBlockNum[{nRow_,j_}]:=Module[{nBlock},
+If[EvenQ[nRow],
+nBlock=nelx nRow/2+(nelx-1)(nRow/2-1);,
+nBlock=nelx (nRow-1)/2+(nelx-1)(nRow-1)/2;
+];
+
+nBlock+=j
+];
+
+
+findStartBlocks[nRow_]:=Module[{j,prev,next,signs,rowLoads,startBlocks},
+rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
 startBlocks={1};
-signs={Sign[Total[loads[[2;;6;;2]]]]};
+signs={Sign[Total[rowLoads[[2;;6;;2]]]]};
 For[j=2,j<=nelx,j++,
-prev=Sign[Total[loads[[6(j-1-1)+2;;6(j-1);;2]]]];
-next=Sign[Total[loads[[6(j-1)+2;;6j;;2]]]];
+prev=Sign[Total[rowLoads[[6(j-1-1)+2;;6(j-1);;2]]]];
+next=Sign[Total[rowLoads[[6(j-1)+2;;6j;;2]]]];
 If[prev next<=0&&next!=0,
 AppendTo[signs,next];
 AppendTo[startBlocks,j-1];
@@ -86,11 +97,26 @@ pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};
 Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]];
 
 
-updateStress[pBlock_,blockPos_]:=Module[{nBlock},
-nBlock=(blockPos[[1]]-1)nelx+blockPos[[2]];
-\[Sigma]v[[nBlock]]=pBlock[[5;;16]];
-\[Sigma]h[[nBlock+blockPos[[1]]-1]]=pBlock[[1;;4]];(*interface on the left side of the current block*)
-\[Sigma]h[[nBlock+blockPos[[1]]]]=pBlock[[17;;20]];(*interface on the right side of the current block*)
+solveRow[nRow_]:=Module[{j,startBlocks,blockNum,blockLoads,contact},
+startBlocks=findStartBlocks[nRow];
+For[j=1,j<=Length[startBlocks],j++,
+Do[
+blockLoads=getBlockLoads[{nRow,k}];
+contact=contacts[[getBlockNum[{nRow,k}]]];
+blockLoads=solveBlock[blockLoads,contact];
+updateStress[blockLoads,{nRow,k}];,
+{k,startBlocks[[j]]}
+];
+];
+(*TODO: check equilibrium at the vertical interfaces*)
+];
+
+
+updateStress[pBlock_,blockPos_]:=Module[{blockNum},
+blockNum=getBlockNum[{blockPos[[1]],blockPos[[2]]}];
+\[Sigma]v[[blockNum]]=pBlock[[5;;16]];
+\[Sigma]h[[blockNum+blockPos[[1]]-1]]=pBlock[[1;;4]];(*interface on the left side of the current block*)
+\[Sigma]h[[blockNum+blockPos[[1]]]]=pBlock[[17;;20]];(*interface on the right side of the current block*)
 ];
 
 
