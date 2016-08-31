@@ -5,6 +5,7 @@ Needs["ProbabilisticBricks`Block`"];
 Needs["ProbabilisticBricks`Problem`"]
 
 
+getBlockNum::usage="getBlockNum[{nRow,j}] returns the block number corresponding to the postion {nRow,j}.";
 solveWall::usage="solveWall[] computes the stress vectors for the wall.";
 displayWall::usage="displayWall[] generates a drawing of the wall showing the stress path.";
 
