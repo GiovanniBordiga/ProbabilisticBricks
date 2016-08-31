@@ -15,10 +15,14 @@ nelx;nely;b;h;P;\[Mu];contacts;
 Begin["`Private`"];
 
 
-(*Properties initialization*)
-nelx=80;nely=50;b=2;h=1;P=0.1;\[Mu]=0.8;
-\[Sigma]v=Table[{0,0,0,0,0,0,0,0,0,0,0,0},{nely nelx}];
-\[Sigma]h=Table[{0,0,0,0},{(nelx+1)nely}];
+initStressVectors[$nelx_,$nely_]:=Module[{},
+If[EvenQ[$nely],
+totalBlocks=getBlockNum[{$nely,$nelx-1}];,
+totalBlocks=getBlockNum[{$nely,$nelx}];
+];
+\[Sigma]v=Table[{0,0,0,0,0,0,0,0,0,0,0,0},{totalBlocks}];
+\[Sigma]h=Table[{0,0,0,0},{totalBlocks+$nely}];
+];
 
 
 setProblemProperties[$nelx_,$nely_,$b_,$h_,$P_,$\[Mu]_,$contacts_]:=Module[{},
@@ -26,13 +30,12 @@ nelx=$nelx;nely=$nely;
 b=$b;h=$h;
 contacts=$contacts;
 P=$P;\[Mu]=$\[Mu];
-\[Sigma]v=Table[{0,0,0,0,0,0,0,0,0,0,0,0},{$nely $nelx}];
-\[Sigma]h=Table[{0,0,0,0},{($nelx+1)$nely}];
+init
 ];
 
 
 generateContacts[]:=Module[{},
-contacts=RandomInteger[{1,3},{nely ,nelx}];
+contacts=RandomInteger[{1,3},totalBlocks];
 ];
 
 
@@ -52,6 +55,11 @@ applyLoads[];
 solveWall[];
 displayWall[]
 ];
+
+
+(*Properties initialization*)
+nelx=80;nely=50;b=2;h=1;P=0.1;\[Mu]=0.8;
+initStressVectors[nelx,nely];
 
 
 End[];
