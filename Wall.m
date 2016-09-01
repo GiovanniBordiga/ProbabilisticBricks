@@ -124,17 +124,10 @@ blockNum=getBlockNum[{blockPos[[1]],blockPos[[2]]}];
 checkRowEquilibrium[pBlock_]:=pBlock[[17;;20]]=={0,0,0,0};
 
 
-solveWall[]:=Module[{blockLoads,pBlock,i,j},
+solveWall[]:=Module[{i},
 eqCheck=True;
 For[i=1,i<=nely&&eqCheck,i++,
-For[j=1,j<=nelx,j++,
-blockLoads=getBlockLoads[{i,j}];
-
-pBlock=solveBlock[blockLoads,contacts[[i,j]]];
-
-updateStress[pBlock,{i,j}];
-];
-eqCheck=checkRowEquilibrium[pBlock];
+solveRow[i];
 ];
 ];
 
