@@ -30,7 +30,7 @@ nelx=$nelx;nely=$nely;
 b=$b;h=$h;
 contacts=$contacts;
 P=$P;\[Mu]=$\[Mu];
-init
+initStressVectors[nelx,nely];
 ];
 
 
