@@ -1,8 +1,6 @@
 (* ::Package:: *)
 
 BeginPackage["ProbabilisticBricks`Wall`"];
-Needs["ProbabilisticBricks`Block`"];
-Needs["ProbabilisticBricks`Problem`"]
 
 
 getBlockNum::usage="getBlockNum[{nRow,j}] returns the block number corresponding to the postion {nRow,j}.";
@@ -11,6 +9,8 @@ displayWall::usage="displayWall[] generates a drawing of the wall showing the st
 
 
 Begin["`Private`"];
+Needs["ProbabilisticBricks`Block`"];
+Needs["ProbabilisticBricks`Problem`"]
 
 
 getBlockNum[{nRow_,j_}]:=Module[{nBlock},
