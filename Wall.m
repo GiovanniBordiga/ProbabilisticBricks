@@ -152,7 +152,10 @@ checkRowEquilibrium[pBlock_]:=pBlock[[17;;20]]=={0,0,0,0};
 
 
 transferContactActionsBelow[nRow_]:=Module[{j,totalBlocksInRowBelow},
-If[EvenQ[nRow+1],totalBlocksInRowBelow=nelx-1;totalBlocksInRowBelow=nelx;];
+If[EvenQ[nRow+1],
+totalBlocksInRowBelow=nelx-1;,
+totalBlocksInRowBelow=nelx;
+];
 (*transfer base reactions of blocks in row nRow to the blocks in row nRow+1*)
 For[j=1,j<=totalBlocksInRowBelow,j++,
 updateStress[getBlockLoads[{nRow+1,j}],{nRow+1,j}];
@@ -164,7 +167,9 @@ solveWall[]:=Module[{i},
 eqCheck=True;
 For[i=1,i<=nely&&eqCheck,i++,
 solveRow[i];
+If[i!=nely,
 transferContactActionsBelow[i];
+];
 ];
 ];
 
