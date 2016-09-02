@@ -31,7 +31,7 @@ j==nelx]
 isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
 
-findStartBlocks[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks},
+findSolvableBlockSequence[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks,blockSequence},
 rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
 totalBlocksInRow=Length[rowLoads]/6;
 startBlocks={1};
@@ -47,13 +47,15 @@ AppendTo[startBlocks,j];
 ];
 AppendTo[startBlocks,totalBlocksInRow];
 startBlocks=Partition[startBlocks,2];
+blockSequence=startBlocks;
 For[j=1,j<=Length[signs],j++,
+blockSequence[[j]]=Range[blockSequence[[j,1]],blockSequence[[j,2]]];(*'expand' startBlocks[[j]] into its range*)
 If[signs[[j]]<0,
-startBlocks[[j,{1,2}]]=startBlocks[[j,{2,1}]];
+blockSequence[[j]]=Reverse[blockSequence[[j]]];
 ];
 ];
 
-startBlocks
+blockSequence
 ];
 
 
@@ -124,15 +126,15 @@ Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
 ];
 
 
-solveRow[nRow_]:=Module[{j,startBlocks,blockLoads,contact},
-startBlocks=findStartBlocks[nRow];
-For[j=1,j<=Length[startBlocks],j++,
+solveRow[nRow_]:=Module[{j,blockSequence,blockLoads,contact},
+blockSequence=findSolvableBlockSequence[nRow];
+For[j=1,j<=Length[blockSequence],j++,
 Do[
 blockLoads=getBlockLoads[{nRow,k}];
 contact=contacts[[getBlockNum[{nRow,k}]]];
 blockLoads=solveBlock[blockLoads,contact];
 updateStress[blockLoads,{nRow,k}];,
-{k,startBlocks[[j]]}
+{k,blockSequence[[j]]}
 ];
 ];
 
