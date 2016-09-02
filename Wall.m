@@ -1,8 +1,6 @@
 (* ::Package:: *)
 
 BeginPackage["ProbabilisticBricks`Wall`"];
-Needs["ProbabilisticBricks`Block`"];
-Needs["ProbabilisticBricks`Problem`"]
 
 
 solveWall::usage="solveWall[] computes the stress vectors for the wall.";
@@ -10,6 +8,8 @@ displayWall::usage="displayWall[] generates a drawing of the wall showing the st
 
 
 Begin["`Private`"];
+Needs["ProbabilisticBricks`Block`"];
+Needs["ProbabilisticBricks`Problem`"]
 
 
 getBlockLoads[blockPos_]:=Module[{pvnew,Ns,Ts,Ncs,Tcs,Ncd,Tcd,Nd,Td,nBlock,blockULPos,blockURPos,nBlockUL,nBlockUR},

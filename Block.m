@@ -1,13 +1,13 @@
 (* ::Package:: *)
 
 BeginPackage["ProbabilisticBricks`Block`"];
-Needs["ProbabilisticBricks`Problem`"];
 
 
 solveBlock::usage="solveBlock[pBlock, contact] returns the vector of interface forces satisfying the equilibrium, the friction criterion and the unilaterality condition.";
 
 
 Begin["`Private`"];
+Needs["ProbabilisticBricks`Problem`"];
 
 
 V[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];

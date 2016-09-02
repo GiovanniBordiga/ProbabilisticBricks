@@ -1,7 +1,6 @@
 (* ::Package:: *)
 
 BeginPackage["ProbabilisticBricks`Problem`"];
-Needs["ProbabilisticBricks`Wall`"];
 
 
 setProblemProperties::usage="setProblemProperties[nelx,nely,b,h,P,\[Mu],contacts] set the properites of the current problem.";
@@ -13,6 +12,7 @@ nelx;nely;b;h;P;\[Mu];contacts;
 
 
 Begin["`Private`"];
+Needs["ProbabilisticBricks`Wall`"];
 
 
 (*Properties initialization*)
