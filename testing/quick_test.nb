@@ -70,7 +70,7 @@ Cell[BoxData[
  CellChangeTimes->{{3.681703689430151*^9, 3.6817037136457853`*^9}}]
 },
 WindowSize->{683, 378},
-WindowMargins->{{23, Automatic}, {156, Automatic}},
+WindowMargins->{{Automatic, 186}, {49, Automatic}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]

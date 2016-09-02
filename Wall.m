@@ -174,14 +174,30 @@ transferContactActionsBelow[i];
 ];
 
 
-displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTL,ptTR,i,j},
+displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTR,i,j,totalBlocksInRow},
 blocks={}; stressAvg={};interfaces={};
 For[i=1,i<=nely,i++,
-For[j=1,j<=nelx,j++,
-ptBL={(j -1)b+Mod[i,2]b/2,(nely-i)h};(*bottom left vertex's coordinates of the current block*)
-ptBR={j b+Mod[i,2]b/2,(nely-i)h};(*bottom right vertex's coordinates of the current block*)
-ptTL={(j -1)b+Mod[i,2]b/2,(nely-i+1)h};(*top left vertex's coordinates of the current block*)
-ptTR={j b+Mod[i,2]b/2,(nely-i+1)h};(*top right vertex's coordinates of the current block*)
+If[EvenQ[i],
+totalBlocksInRow=nelx-1;,
+totalBlocksInRow=nelx;
+];
+For[j=1,j<=totalBlocksInRow,j++,
+If[!(isBlockOnLeftEdge[{i,j}]||isBlockOnRightEdge[{i,j}]),
+ptBL={(j -1)b-Mod[i,2]b/2,(nely-i)h};(*bottom left vertex's coordinates of the current block*)
+ptBR={j b-Mod[i,2]b/2,(nely-i)h};(*bottom right vertex's coordinates of the current block*)
+ptTR={j b-Mod[i,2]b/2,(nely-i+1)h};(*top right vertex's coordinates of the current block*),
+If[isBlockOnLeftEdge[{i,j}],
+(*block on the left edge*)
+ptBL={0,(nely-i)h};
+ptBR={b-Mod[i,2]b/2,(nely-i)h};
+ptTR={b-Mod[i,2]b/2,(nely-i+1)h};,
+(*block on the right edge*)
+ptBL={b(nelx-2)+Mod[i,2]b/2,(nely-i)h};
+ptBR={b(nelx-1),(nely-i)h};
+ptTR={b(nelx-1),(nely-i+1)h};
+];
+];
+
 (*create graphical elements colored using stress measure*)
 blockLoads=getBlockLoads[{i,j}];
 AppendTo[stressAvg,Norm[blockLoads]];(*stress measure defined as the norm of 'blockLoads'*)
@@ -189,8 +205,6 @@ AppendTo[blocks,{EdgeForm[{Black}],GrayLevel[0.5],Rectangle[ptBL,ptTR]}];
 
 frictionRatio=Piecewise[{{Abs[Total[blockLoads[[12;;16;;2]]]]/(\[Mu] Total[blockLoads[[11;;15;;2]]]),Total[blockLoads[[11;;15;;2]]]>0}}];
 AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBL,ptBR}]}];(*friction on the base*)
-(*frictionRatio=Piecewise[{{Abs[Total[blockLoads[[18;;20;;2]]]]/(\[Mu] Total[blockLoads[[17;;19;;2]]]),Total[blockLoads[[17;;19;;2]]]>0}}];
-AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBR,ptTR}]}];*)(*friction on the right side*)
 ];
 ];
 blocks[[;;,2]]=GrayLevel/@(stressAvg/Max[stressAvg]);(*assign GrayLevel based on strees*)
