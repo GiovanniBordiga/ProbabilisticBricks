@@ -31,7 +31,7 @@ j==nelx]
 isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
 
-findStartBlocks[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks},
+findSolvableBlockSequence[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks,blockSequence},
 rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
 totalBlocksInRow=Length[rowLoads]/6;
 startBlocks={1};
@@ -47,13 +47,15 @@ AppendTo[startBlocks,j];
 ];
 AppendTo[startBlocks,totalBlocksInRow];
 startBlocks=Partition[startBlocks,2];
+blockSequence=startBlocks;
 For[j=1,j<=Length[signs],j++,
+blockSequence[[j]]=Range[blockSequence[[j,1]],blockSequence[[j,2]]];(*'expand' startBlocks[[j]] into its range*)
 If[signs[[j]]<0,
-startBlocks[[j,{1,2}]]=startBlocks[[j,{2,1}]];
+blockSequence[[j]]=Reverse[blockSequence[[j]]];
 ];
 ];
 
-startBlocks
+blockSequence
 ];
 
 
@@ -124,15 +126,15 @@ Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
 ];
 
 
-solveRow[nRow_]:=Module[{j,startBlocks,blockLoads,contact},
-startBlocks=findStartBlocks[nRow];
-For[j=1,j<=Length[startBlocks],j++,
+solveRow[nRow_]:=Module[{j,blockSequence,blockLoads,contact},
+blockSequence=findSolvableBlockSequence[nRow];
+For[j=1,j<=Length[blockSequence],j++,
 Do[
 blockLoads=getBlockLoads[{nRow,k}];
 contact=contacts[[getBlockNum[{nRow,k}]]];
 blockLoads=solveBlock[blockLoads,contact];
 updateStress[blockLoads,{nRow,k}];,
-{k,startBlocks[[j]]}
+{k,blockSequence[[j]]}
 ];
 ];
 
@@ -174,14 +176,30 @@ transferContactActionsBelow[i];
 ];
 
 
-displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTL,ptTR,i,j},
+displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTR,i,j,totalBlocksInRow},
 blocks={}; stressAvg={};interfaces={};
 For[i=1,i<=nely,i++,
-For[j=1,j<=nelx,j++,
-ptBL={(j -1)b+Mod[i,2]b/2,(nely-i)h};(*bottom left vertex's coordinates of the current block*)
-ptBR={j b+Mod[i,2]b/2,(nely-i)h};(*bottom right vertex's coordinates of the current block*)
-ptTL={(j -1)b+Mod[i,2]b/2,(nely-i+1)h};(*top left vertex's coordinates of the current block*)
-ptTR={j b+Mod[i,2]b/2,(nely-i+1)h};(*top right vertex's coordinates of the current block*)
+If[EvenQ[i],
+totalBlocksInRow=nelx-1;,
+totalBlocksInRow=nelx;
+];
+For[j=1,j<=totalBlocksInRow,j++,
+If[!(isBlockOnLeftEdge[{i,j}]||isBlockOnRightEdge[{i,j}]),
+ptBL={(j -1)b-Mod[i,2]b/2,(nely-i)h};(*bottom left vertex's coordinates of the current block*)
+ptBR={j b-Mod[i,2]b/2,(nely-i)h};(*bottom right vertex's coordinates of the current block*)
+ptTR={j b-Mod[i,2]b/2,(nely-i+1)h};(*top right vertex's coordinates of the current block*),
+If[isBlockOnLeftEdge[{i,j}],
+(*block on the left edge*)
+ptBL={0,(nely-i)h};
+ptBR={b-Mod[i,2]b/2,(nely-i)h};
+ptTR={b-Mod[i,2]b/2,(nely-i+1)h};,
+(*block on the right edge*)
+ptBL={b(nelx-2)+Mod[i,2]b/2,(nely-i)h};
+ptBR={b(nelx-1),(nely-i)h};
+ptTR={b(nelx-1),(nely-i+1)h};
+];
+];
+
 (*create graphical elements colored using stress measure*)
 blockLoads=getBlockLoads[{i,j}];
 AppendTo[stressAvg,Norm[blockLoads]];(*stress measure defined as the norm of 'blockLoads'*)
@@ -189,8 +207,6 @@ AppendTo[blocks,{EdgeForm[{Black}],GrayLevel[0.5],Rectangle[ptBL,ptTR]}];
 
 frictionRatio=Piecewise[{{Abs[Total[blockLoads[[12;;16;;2]]]]/(\[Mu] Total[blockLoads[[11;;15;;2]]]),Total[blockLoads[[11;;15;;2]]]>0}}];
 AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBL,ptBR}]}];(*friction on the base*)
-(*frictionRatio=Piecewise[{{Abs[Total[blockLoads[[18;;20;;2]]]]/(\[Mu] Total[blockLoads[[17;;19;;2]]]),Total[blockLoads[[17;;19;;2]]]>0}}];
-AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBR,ptTR}]}];*)(*friction on the right side*)
 ];
 ];
 blocks[[;;,2]]=GrayLevel/@(stressAvg/Max[stressAvg]);(*assign GrayLevel based on strees*)

@@ -53,7 +53,7 @@ For[j=1,j<=nelx,j++,
 solveProblem[]:=Module[{},
 applyLoads[];
 solveWall[];
-(*displayWall[]*)
+displayWall[]
 ];
 
 
