@@ -22,6 +22,14 @@ nBlock=nelx (nRow-1)/2+(nelx-1)(nRow-1)/2;
 nBlock+=j
 ];
 
+isBlockOnRightEdge[{nRow,j}]:=Module[{},
+If[EvenQ[nRow],
+j==nelx-1,
+j==nelx];
+];
+
+isBlockOnLeftEdge[{nRow,j}]:=j==1;
+
 
 findStartBlocks[nRow_]:=Module[{j,prev,next,signs,rowLoads,startBlocks},
 rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
@@ -48,54 +56,71 @@ startBlocks
 ];
 
 
-getBlockLoads[blockPos_]:=Module[{pvnew,Ns,Ts,Ncs,Tcs,Ncd,Tcd,Nd,Td,nBlock,blockULPos,blockURPos,nBlockUL,nBlockUR},
-nBlock=(blockPos[[1]]-1)nelx+blockPos[[2]];
+getBlockLoads[{nRow_,j_}]:=Module[{pvnew,Ns,Ts,Ncs,Tcs,Ncd,Tcd,Nd,Td,nBlock,blockULPos,blockURPos,nBlockUL,nBlockUR},nBlock=getBlockNum[{nRow,j}];
 
-If[blockPos[[1]]==1,
+If[nRow==1,
 
 (*first row*)
 pvnew=\[Sigma]v[[nBlock]];,
 
 (*other rows*)
 (*get upper blocks' positions*)
-If[EvenQ[blockPos[[1]]],
-blockULPos={blockPos[[1]]-1,blockPos[[2]]-1};blockURPos={blockPos[[1]]-1,blockPos[[2]]};,
-blockULPos={blockPos[[1]]-1,blockPos[[2]]};blockURPos={blockPos[[1]]-1,blockPos[[2]]+1};
+If[EvenQ[nRow],
+blockULPos={nRow-1,j};blockURPos={nRow-1,j+1};,
+blockULPos={nRow-1,j-1};blockURPos={nRow-1,j};
+(*If[isBlockOnLeftEdge[{nRow,j}],
+blockULPos={0,0};
 ];
-nBlockUL=(blockULPos[[1]]-1)nelx+blockULPos[[2]];
-nBlockUR=(blockURPos[[1]]-1)nelx+blockURPos[[2]];
+If[isBlockOnRightEdge[{nRow,j}],
+blockURPos={0,0};
+];*)
+];
+nBlockUL=getBlockNum[blockULPos];
+nBlockUR=getBlockNum[blockURPos];
 
 (*get loads acting on top from the reactions of the upper blocks*)
-If[blockULPos[[2]]!=0&&blockURPos[[2]]<=nelx,
+If[!(isBlockOnLeftEdge[{nRow,j}]||isBlockOnRightEdge[{nRow,j}]),
 (*block is internal*)
 Ncs=\[Sigma]v[[nBlockUL,11]];Tcs=\[Sigma]v[[nBlockUL,12]];
 Ncd=\[Sigma]v[[nBlockUR,7]];Tcd=\[Sigma]v[[nBlockUR,8]];
-If[contacts[[blockULPos[[1]],blockULPos[[2]]]]==3,
+If[contacts[[nBlockUL]]==3,
 Ns=\[Sigma]v[[nBlockUL,9]];Ts=\[Sigma]v[[nBlockUL,10]];,
-Ns=0;Ts=0;];
-If[contacts[[blockURPos[[1]],blockURPos[[2]]]]==2,
+Ns=0;Ts=0;
+];
+If[contacts[[nBlockUR]]==2,
 Nd=\[Sigma]v[[nBlockUR,9]];Td=\[Sigma]v[[nBlockUR,10]];,
-Nd=0;Td=0;];,
+Nd=0;Td=0;
+];,
+
 (*block in not internal*)
-If[blockULPos[[2]]==0,
-(*block protruding to the left*)
-Ns=0;Ts=0;Ncs=0;Tcs=0;
+If[isBlockOnLeftEdge[{nRow,j}],(*TODO: modify to support edge blocks!*)
+(*block on the left edge*)
 Ncd=\[Sigma]v[[nBlockUR,7]];Tcd=\[Sigma]v[[nBlockUR,8]];
-If[contacts[[blockURPos[[1]],blockURPos[[2]]]]==2,
+If[contacts[[nBlockUR]]==2,
 Nd=\[Sigma]v[[nBlockUR,9]];Td=\[Sigma]v[[nBlockUR,10]];,
-Nd=0;Td=0;];,
-(*block protruding to the right*)
-Nd=0;Td=0;Ncd=0;Tcd=0;
+Nd=0;Td=0;
+];
+If[EvenQ[nRow],
+Ns=\[Sigma]v[[nBlockUL,9]];Ts=\[Sigma]v[[nBlockUL,10]];Ncs=\[Sigma]v[[nBlockUL,11]];Tcs=\[Sigma]v[[nBlockUL,12]];,
+Ns=0;Ts=0;Ncs=0;Tcs=0;
+];,
+(*block on the right edge*)
 Ncs=\[Sigma]v[[nBlockUL,11]];Tcs=\[Sigma]v[[nBlockUL,12]];
-If[contacts[[blockULPos[[1]],blockULPos[[2]]]]==3,
+If[contacts[[nBlockUL]]==3,
 Ns=\[Sigma]v[[nBlockUL,9]];Ts=\[Sigma]v[[nBlockUL,10]];,
-Ns=0;Ts=0;];
+Ns=0;Ts=0;
+];
+If[EvenQ[nRow],
+Nd=\[Sigma]v[[nBlockUR,9]];Td=\[Sigma]v[[nBlockUR,10]];Ncd=\[Sigma]v[[nBlockUR,7]];Tcd=\[Sigma]v[[nBlockUR,8]];,
+Nd=0;Td=0;Ncd=0;Tcd=0;
 ];
 ];
-pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};
+];
+pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};(*TODO: modify to support edge blocks!*)
 ];
 
-Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]];
+Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
+];
 
 
 solveRow[nRow_]:=Module[{j,startBlocks,blockNum,blockLoads,contact},
