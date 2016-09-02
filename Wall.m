@@ -22,13 +22,13 @@ nBlock=nelx (nRow-1)/2+(nelx-1)(nRow-1)/2;
 nBlock+=j
 ];
 
-isBlockOnRightEdge[{nRow,j}]:=Module[{},
+isBlockOnRightEdge[{nRow_,j_}]:=Module[{},
 If[EvenQ[nRow],
 j==nelx-1,
-j==nelx];
+j==nelx]
 ];
 
-isBlockOnLeftEdge[{nRow,j}]:=j==1;
+isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
 
 findStartBlocks[nRow_]:=Module[{j,prev,next,signs,rowLoads,startBlocks},
