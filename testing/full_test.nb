@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     53441,       1458]
-NotebookOptionsPosition[     52042,       1412]
-NotebookOutlinePosition[     52377,       1427]
-CellTagsIndexPosition[     52334,       1424]
+NotebookDataLength[     53787,       1471]
+NotebookOptionsPosition[     52348,       1424]
+NotebookOutlinePosition[     52683,       1439]
+CellTagsIndexPosition[     52640,       1436]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1262,7 +1262,7 @@ Cell[BoxData[
    RowBox[{"setProblemProperties", "[", 
     RowBox[{
     "$nelx_", ",", "$nely_", ",", "$b_", ",", "$h_", ",", "$P_", ",", 
-     "$\[Mu]_", ",", "$contacts_"}], "]"}], ":=", 
+     "$\[Mu]_"}], "]"}], ":=", 
    RowBox[{"Module", "[", 
     RowBox[{
      RowBox[{"{", "}"}], ",", "\n", 
@@ -1271,12 +1271,12 @@ Cell[BoxData[
       RowBox[{"nely", "=", "$nely"}], ";", "\n", 
       RowBox[{"b", "=", "$b"}], ";", 
       RowBox[{"h", "=", "$h"}], ";", "\n", 
-      RowBox[{"contacts", "=", "$contacts"}], ";", "\n", 
       RowBox[{"P", "=", "$P"}], ";", 
       RowBox[{"\[Mu]", "=", "$\[Mu]"}], ";", "\n", 
       RowBox[{"initStressVectors", "[", 
        RowBox[{"nelx", ",", "nely"}], "]"}], ";"}]}], "\n", "]"}]}], 
-  ";"}]], "Input"],
+  ";"}]], "Input",
+ CellChangeTimes->{{3.681806121974045*^9, 3.6818061450677567`*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1347,9 +1347,12 @@ Cell[BoxData[
      RowBox[{"{", "}"}], ",", "\n", 
      RowBox[{
       RowBox[{"applyLoads", "[", "]"}], ";", "\n", 
-      RowBox[{"solveWall", "[", "]"}], ";", "\n", 
-      RowBox[{"displayWall", "[", "]"}]}]}], "\n", "]"}]}], ";"}]], "Input",
- CellChangeTimes->{3.681799554317299*^9, 3.6818008047174587`*^9}]
+      RowBox[{"solveWall", "[", "]"}], ";"}]}], "\n", 
+    RowBox[{"(*", 
+     RowBox[{"displayWall", "[", "]"}], "*)"}], "\n", "]"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{3.681799554317299*^9, 3.6818008047174587`*^9, 
+  3.681805869677287*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1372,9 +1375,18 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"setProblemProperties", "[", 
      RowBox[{
-     "nelx", ",", "nely", ",", "b", ",", "h", ",", "P", ",", "\[Mu]", ",", 
-      RowBox[{"generateContacts", "[", "]"}]}], "]"}], ";"}]}]}]], "Input",
- CellChangeTimes->{{3.681800897819695*^9, 3.681800925859068*^9}}],
+     "nelx", ",", "nely", ",", "b", ",", "h", ",", "P", ",", "\[Mu]"}], "]"}],
+     ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.681800897819695*^9, 3.681800925859068*^9}, {
+  3.6818061755977163`*^9, 3.681806198491375*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Contacts", " ", "generation"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"generateContacts", "[", "]"}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.681806202871662*^9, 3.681806247462635*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1411,7 +1423,7 @@ Cell[BoxData[
 }, Open  ]]
 },
 WindowSize->{703, 478},
-WindowMargins->{{Automatic, 215}, {Automatic, 51}},
+WindowMargins->{{Automatic, 227}, {Automatic, 93}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -1430,17 +1442,17 @@ Cell[CellGroupData[{
 Cell[580, 22, 117, 1, 65, "Section"],
 Cell[700, 25, 691, 22, 77, "Input"],
 Cell[1394, 49, 3476, 96, 473, "Input"],
-Cell[4873, 147, 6543, 173, 781, "Input"],
+Cell[4873, 147, 6543, 173, 693, "Input"],
 Cell[11419, 322, 421, 12, 77, "Input"],
 Cell[11843, 336, 749, 22, 143, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[12629, 363, 116, 1, 65, "Section"],
 Cell[12748, 366, 2077, 64, 363, "Input"],
-Cell[14828, 432, 4176, 112, 605, "Input"],
-Cell[19007, 546, 12849, 305, 1903, "Input"],
-Cell[31859, 853, 1924, 50, 319, "Input"],
-Cell[33786, 905, 1789, 49, 187, "Input"],
+Cell[14828, 432, 4176, 112, 517, "Input"],
+Cell[19007, 546, 12849, 305, 1463, "Input"],
+Cell[31859, 853, 1924, 50, 297, "Input"],
+Cell[33786, 905, 1789, 49, 143, "Input"],
 Cell[35578, 956, 308, 9, 32, "Input"],
 Cell[35889, 967, 559, 17, 143, "Input"],
 Cell[36451, 986, 9097, 222, 979, "Input"]
@@ -1448,17 +1460,18 @@ Cell[36451, 986, 9097, 222, 979, "Input"]
 Cell[CellGroupData[{
 Cell[45585, 1213, 119, 1, 65, "Section"],
 Cell[45707, 1216, 1428, 40, 187, "Input"],
-Cell[47138, 1258, 755, 20, 187, "Input"],
-Cell[47896, 1280, 406, 13, 77, "Input"],
-Cell[48305, 1295, 275, 9, 77, "Input"],
-Cell[48583, 1306, 1134, 32, 121, "Input"],
-Cell[49720, 1340, 417, 11, 121, "Input"]
+Cell[47138, 1258, 746, 20, 165, "Input"],
+Cell[47887, 1280, 406, 13, 77, "Input"],
+Cell[48296, 1295, 275, 9, 77, "Input"],
+Cell[48574, 1306, 1134, 32, 121, "Input"],
+Cell[49711, 1340, 470, 14, 121, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[50174, 1356, 91, 1, 65, "Section"],
-Cell[50268, 1359, 665, 17, 77, "Input"],
-Cell[50936, 1378, 888, 25, 121, "Input"],
-Cell[51827, 1405, 199, 4, 55, "Input"]
+Cell[50218, 1359, 91, 1, 65, "Section"],
+Cell[50312, 1362, 669, 18, 77, "Input"],
+Cell[50984, 1382, 255, 6, 55, "Input"],
+Cell[51242, 1390, 888, 25, 121, "Input"],
+Cell[52133, 1417, 199, 4, 55, "Input"]
 }, Open  ]]
 }
 ]
