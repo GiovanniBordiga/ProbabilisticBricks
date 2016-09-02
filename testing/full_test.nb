@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     53787,       1471]
-NotebookOptionsPosition[     52348,       1424]
-NotebookOutlinePosition[     52683,       1439]
-CellTagsIndexPosition[     52640,       1436]
+NotebookDataLength[     56664,       1535]
+NotebookOptionsPosition[     55181,       1487]
+NotebookOutlinePosition[     55516,       1502]
+CellTagsIndexPosition[     55473,       1499]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -438,8 +438,8 @@ Cell[BoxData[
     RowBox[{
      RowBox[{"{", 
       RowBox[{
-      "j", ",", "prev", ",", "next", ",", "signs", ",", "rowLoads", ",", 
-       "startBlocks"}], "}"}], ",", "\n", 
+      "j", ",", "totalBlocksInRow", ",", "prev", ",", "next", ",", "signs", 
+       ",", "rowLoads", ",", "startBlocks"}], "}"}], ",", "\n", 
      RowBox[{
       RowBox[{"rowLoads", "=", 
        RowBox[{"Flatten", "[", 
@@ -455,6 +455,9 @@ Cell[BoxData[
               RowBox[{
                RowBox[{"nRow", "+", "1"}], ",", "0"}], "}"}], "]"}]}], ",", 
            RowBox[{"1", ";;", "6"}]}], "]"}], "]"}], "]"}]}], ";", "\n", 
+      RowBox[{"totalBlocksInRow", "=", 
+       RowBox[{
+        RowBox[{"Length", "[", "rowLoads", "]"}], "/", "6"}]}], ";", "\n", 
       RowBox[{"startBlocks", "=", 
        RowBox[{"{", "1", "}"}]}], ";", "\n", 
       RowBox[{"signs", "=", 
@@ -468,7 +471,7 @@ Cell[BoxData[
       RowBox[{"For", "[", 
        RowBox[{
         RowBox[{"j", "=", "2"}], ",", 
-        RowBox[{"j", "<=", "nelx"}], ",", 
+        RowBox[{"j", "<=", "totalBlocksInRow"}], ",", 
         RowBox[{"j", "++"}], ",", "\n", 
         RowBox[{
          RowBox[{"prev", "=", 
@@ -513,7 +516,7 @@ Cell[BoxData[
              RowBox[{"startBlocks", ",", "j"}], "]"}], ";"}]}], "\n", "]"}], 
          ";"}]}], "\n", "]"}], ";", "\n", 
       RowBox[{"AppendTo", "[", 
-       RowBox[{"startBlocks", ",", "nelx"}], "]"}], ";", "\n", 
+       RowBox[{"startBlocks", ",", "totalBlocksInRow"}], "]"}], ";", "\n", 
       RowBox[{"startBlocks", "=", 
        RowBox[{"Partition", "[", 
         RowBox[{"startBlocks", ",", "2"}], "]"}]}], ";", "\n", 
@@ -542,7 +545,10 @@ Cell[BoxData[
                 RowBox[{"{", 
                  RowBox[{"2", ",", "1"}], "}"}]}], "]"}], "]"}]}], ";"}]}], 
           "\n", "]"}], ";"}]}], "\n", "]"}], ";", "\n", "\n", 
-      "startBlocks"}]}], "\n", "]"}]}], ";"}]], "Input"],
+      "startBlocks"}]}], "\n", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.6818087599172373`*^9, {3.681808956367957*^9, 3.681808999877264*^9}, {
+   3.681809036882361*^9, 3.681809094606866*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -858,9 +864,8 @@ Cell[BoxData[
    RowBox[{"Module", "[", 
     RowBox[{
      RowBox[{"{", 
-      RowBox[{
-      "j", ",", "startBlocks", ",", "blockNum", ",", "blockLoads", ",", 
-       "contact"}], "}"}], ",", "\n", 
+      RowBox[{"j", ",", "startBlocks", ",", "blockLoads", ",", "contact"}], 
+      "}"}], ",", "\n", 
      RowBox[{
       RowBox[{"startBlocks", "=", 
        RowBox[{"findStartBlocks", "[", "nRow", "]"}]}], ";", "\n", 
@@ -901,13 +906,17 @@ Cell[BoxData[
      RowBox[{"TODO", ":", " ", 
       RowBox[{
       "check", " ", "equilibrium", " ", "at", " ", "the", " ", "vertical", 
-       " ", "interfaces"}]}], "*)"}], "\n", "]"}]}], ";"}]], "Input"],
+       " ", "interfaces"}]}], "*)"}], "\n", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6818076453371553`*^9, 3.68180764580564*^9}, {
+  3.681813082430374*^9, 3.681813088140209*^9}}],
 
 Cell[BoxData[
  RowBox[{
   RowBox[{
    RowBox[{"updateStress", "[", 
-    RowBox[{"pBlock_", ",", "blockPos_"}], "]"}], ":=", 
+    RowBox[{"pBlock_", ",", 
+     RowBox[{"{", 
+      RowBox[{"nRow_", ",", "j_"}], "}"}]}], "]"}], ":=", 
    RowBox[{"Module", "[", 
     RowBox[{
      RowBox[{"{", "blockNum", "}"}], ",", "\n", 
@@ -915,11 +924,7 @@ Cell[BoxData[
       RowBox[{"blockNum", "=", 
        RowBox[{"getBlockNum", "[", 
         RowBox[{"{", 
-         RowBox[{
-          RowBox[{"blockPos", "[", 
-           RowBox[{"[", "1", "]"}], "]"}], ",", 
-          RowBox[{"blockPos", "[", 
-           RowBox[{"[", "2", "]"}], "]"}]}], "}"}], "]"}]}], ";", "\n", 
+         RowBox[{"nRow", ",", "j"}], "}"}], "]"}]}], ";", "\n", 
       RowBox[{
        RowBox[{"\[Sigma]v", "[", 
         RowBox[{"[", "blockNum", "]"}], "]"}], "=", 
@@ -929,9 +934,7 @@ Cell[BoxData[
       RowBox[{
        RowBox[{"\[Sigma]h", "[", 
         RowBox[{"[", 
-         RowBox[{"blockNum", "+", 
-          RowBox[{"blockPos", "[", 
-           RowBox[{"[", "1", "]"}], "]"}], "-", "1"}], "]"}], "]"}], "=", 
+         RowBox[{"blockNum", "+", "nRow", "-", "1"}], "]"}], "]"}], "=", 
        RowBox[{"pBlock", "[", 
         RowBox[{"[", 
          RowBox[{"1", ";;", "4"}], "]"}], "]"}]}], ";", 
@@ -942,9 +945,7 @@ Cell[BoxData[
       RowBox[{
        RowBox[{"\[Sigma]h", "[", 
         RowBox[{"[", 
-         RowBox[{"blockNum", "+", 
-          RowBox[{"blockPos", "[", 
-           RowBox[{"[", "1", "]"}], "]"}]}], "]"}], "]"}], "=", 
+         RowBox[{"blockNum", "+", "nRow"}], "]"}], "]"}], "=", 
        RowBox[{"pBlock", "[", 
         RowBox[{"[", 
          RowBox[{"17", ";;", "20"}], "]"}], "]"}]}], ";"}]}], 
@@ -952,7 +953,8 @@ Cell[BoxData[
      RowBox[{
      "interface", " ", "on", " ", "the", " ", "right", " ", "side", " ", "of",
        " ", "the", " ", "current", " ", "block"}], "*)"}], "\n", "]"}]}], 
-  ";"}]], "Input"],
+  ";"}]], "Input",
+ CellChangeTimes->{{3.681810022813951*^9, 3.681810064630859*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -964,6 +966,56 @@ Cell[BoxData[
       RowBox[{"17", ";;", "20"}], "]"}], "]"}], "==", 
     RowBox[{"{", 
      RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}]}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"transferContactActionsBelow", "[", "nRow_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"j", ",", "totalBlocksInRowBelow"}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"EvenQ", "[", 
+         RowBox[{"nRow", "+", "1"}], "]"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"totalBlocksInRowBelow", "=", 
+          RowBox[{"nelx", "-", "1"}]}], ";"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"totalBlocksInRowBelow", "=", "nelx"}], ";"}]}], 
+       "\[IndentingNewLine]", "]"}], ";", "\n", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "transfer", " ", "base", " ", "reactions", " ", "of", " ", "blocks", 
+         " ", "in", " ", "row", " ", "nRow", " ", "to", " ", "the", " ", 
+         "blocks", " ", "in", " ", "row", " ", "nRow"}], "+", "1"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"j", "=", "1"}], ",", 
+        RowBox[{"j", "\[LessEqual]", "totalBlocksInRowBelow"}], ",", 
+        RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"updateStress", "[", 
+          RowBox[{
+           RowBox[{"getBlockLoads", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"nRow", "+", "1"}], ",", "j"}], "}"}], "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"nRow", "+", "1"}], ",", "j"}], "}"}]}], "]"}], ";"}]}], 
+       "\[IndentingNewLine]", "]"}], ";"}]}], "\n", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.681811104956596*^9, 3.681811152365467*^9}, {
+   3.681811239418646*^9, 3.681811327661327*^9}, {3.681811359269311*^9, 
+   3.6818114046991987`*^9}, {3.681811447387339*^9, 3.6818115255039473`*^9}, {
+   3.681811776504512*^9, 3.681811883908958*^9}, {3.6818124368317833`*^9, 
+   3.6818125051648293`*^9}, {3.681812803273199*^9, 3.681812819007867*^9}, {
+   3.6818128799656067`*^9, 3.68181288681713*^9}, 3.681812924306329*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -981,8 +1033,16 @@ Cell[BoxData[
          RowBox[{"i", "<=", "nely"}], "&&", "eqCheck"}], ",", 
         RowBox[{"i", "++"}], ",", "\n", 
         RowBox[{
-         RowBox[{"solveRow", "[", "i", "]"}], ";"}]}], "\n", "]"}], ";"}]}], 
-    "\n", "]"}]}], ";"}]], "Input"],
+         RowBox[{"solveRow", "[", "i", "]"}], ";", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"i", "!=", "nely"}], ",", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"transferContactActionsBelow", "[", "i", "]"}], ";"}]}], 
+          "\[IndentingNewLine]", "]"}], ";"}]}], "\n", "]"}], ";"}]}], "\n", 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.681811043464787*^9, 3.6818110961396303`*^9}, {
+  3.6818128465922422`*^9, 3.681812863230266*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1366,8 +1426,8 @@ Cell[BoxData[
    RowBox[{"Properties", " ", "initialization"}], "*)"}], "\n", 
   RowBox[{
    RowBox[{
-    RowBox[{"nelx", "=", "80"}], ";", 
-    RowBox[{"nely", "=", "50"}], ";", 
+    RowBox[{"nelx", "=", "6"}], ";", 
+    RowBox[{"nely", "=", "6"}], ";", 
     RowBox[{"b", "=", "2"}], ";", 
     RowBox[{"h", "=", "1"}], ";", 
     RowBox[{"P", "=", "0.1"}], ";", 
@@ -1378,7 +1438,8 @@ Cell[BoxData[
      "nelx", ",", "nely", ",", "b", ",", "h", ",", "P", ",", "\[Mu]"}], "]"}],
      ";"}]}]}]], "Input",
  CellChangeTimes->{{3.681800897819695*^9, 3.681800925859068*^9}, {
-  3.6818061755977163`*^9, 3.681806198491375*^9}}],
+  3.6818061755977163`*^9, 3.681806198491375*^9}, {3.681807249128894*^9, 
+  3.681807252358502*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1418,12 +1479,14 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", "Solution", "*)"}], "\[IndentingNewLine]", 
-  RowBox[{"solveProblem", "[", "]"}]}]], "Input",
- CellChangeTimes->{{3.681800985789946*^9, 3.681801028265375*^9}}]
+  RowBox[{
+   RowBox[{"solveProblem", "[", "]"}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.681800985789946*^9, 3.681801028265375*^9}, 
+   3.681813056006426*^9}]
 }, Open  ]]
 },
 WindowSize->{703, 478},
-WindowMargins->{{Automatic, 227}, {Automatic, 93}},
+WindowMargins->{{228, Automatic}, {Automatic, 92}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -1449,29 +1512,30 @@ Cell[11843, 336, 749, 22, 143, "Input"]
 Cell[CellGroupData[{
 Cell[12629, 363, 116, 1, 65, "Section"],
 Cell[12748, 366, 2077, 64, 363, "Input"],
-Cell[14828, 432, 4176, 112, 517, "Input"],
-Cell[19007, 546, 12849, 305, 1463, "Input"],
-Cell[31859, 853, 1924, 50, 297, "Input"],
-Cell[33786, 905, 1789, 49, 143, "Input"],
-Cell[35578, 956, 308, 9, 32, "Input"],
-Cell[35889, 967, 559, 17, 143, "Input"],
-Cell[36451, 986, 9097, 222, 979, "Input"]
+Cell[14828, 432, 4500, 118, 539, "Input"],
+Cell[19331, 552, 12849, 305, 1463, "Input"],
+Cell[32183, 859, 2015, 51, 297, "Input"],
+Cell[34201, 912, 1614, 44, 143, "Input"],
+Cell[35818, 958, 308, 9, 32, "Input"],
+Cell[36129, 969, 2095, 48, 231, "Input"],
+Cell[38227, 1019, 962, 25, 209, "Input"],
+Cell[39192, 1046, 9097, 222, 539, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[45585, 1213, 119, 1, 65, "Section"],
-Cell[45707, 1216, 1428, 40, 187, "Input"],
-Cell[47138, 1258, 746, 20, 165, "Input"],
-Cell[47887, 1280, 406, 13, 77, "Input"],
-Cell[48296, 1295, 275, 9, 77, "Input"],
-Cell[48574, 1306, 1134, 32, 121, "Input"],
-Cell[49711, 1340, 470, 14, 121, "Input"]
+Cell[48326, 1273, 119, 1, 65, "Section"],
+Cell[48448, 1276, 1428, 40, 187, "Input"],
+Cell[49879, 1318, 746, 20, 143, "Input"],
+Cell[50628, 1340, 406, 13, 77, "Input"],
+Cell[51037, 1355, 275, 9, 77, "Input"],
+Cell[51315, 1366, 1134, 32, 121, "Input"],
+Cell[52452, 1400, 470, 14, 121, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[50218, 1359, 91, 1, 65, "Section"],
-Cell[50312, 1362, 669, 18, 77, "Input"],
-Cell[50984, 1382, 255, 6, 55, "Input"],
-Cell[51242, 1390, 888, 25, 121, "Input"],
-Cell[52133, 1417, 199, 4, 55, "Input"]
+Cell[52959, 1419, 91, 1, 65, "Section"],
+Cell[53053, 1422, 716, 19, 77, "Input"],
+Cell[53772, 1443, 255, 6, 55, "Input"],
+Cell[54030, 1451, 888, 25, 121, "Input"],
+Cell[54921, 1478, 244, 6, 55, "Input"]
 }, Open  ]]
 }
 ]
