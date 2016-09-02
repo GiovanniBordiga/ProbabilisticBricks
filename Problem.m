@@ -25,17 +25,16 @@ totalBlocks=getBlockNum[{$nely,$nelx}];
 ];
 
 
-setProblemProperties[$nelx_,$nely_,$b_,$h_,$P_,$\[Mu]_,$contacts_]:=Module[{},
+setProblemProperties[$nelx_,$nely_,$b_,$h_,$P_,$\[Mu]_]:=Module[{},
 nelx=$nelx;nely=$nely;
 b=$b;h=$h;
-contacts=$contacts;
 P=$P;\[Mu]=$\[Mu];
 initStressVectors[nelx,nely];
 ];
 
 
 generateContacts[]:=Module[{},
-contacts=RandomInteger[{1,3},totalBlocks];
+contacts=RandomInteger[{1,3},totalBlocks]
 ];
 
 
@@ -46,14 +45,15 @@ loads=$loads;
 
 applyLoads[]:=Module[{j},
 For[j=1,j<=nelx,j++,
-\[Sigma]v[[j]]=Join[loads[[6(j-1)+1;;6j]],{0,0,0,0,0,0}];];
+\[Sigma]v[[j]]=Join[loads[[6(j-1)+1;;6j]],{0,0,0,0,0,0}];
+];
 ];
 
 
 solveProblem[]:=Module[{},
 applyLoads[];
 solveWall[];
-displayWall[]
+(*displayWall[]*)
 ];
 
 

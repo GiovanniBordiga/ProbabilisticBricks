@@ -22,20 +22,21 @@ nBlock=nelx (nRow-1)/2+(nelx-1)(nRow-1)/2;
 nBlock+=j
 ];
 
-isBlockOnRightEdge[{nRow,j}]:=Module[{},
+isBlockOnRightEdge[{nRow_,j_}]:=Module[{},
 If[EvenQ[nRow],
 j==nelx-1,
-j==nelx];
+j==nelx]
 ];
 
-isBlockOnLeftEdge[{nRow,j}]:=j==1;
+isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
 
-findStartBlocks[nRow_]:=Module[{j,prev,next,signs,rowLoads,startBlocks},
+findStartBlocks[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks},
 rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
+totalBlocksInRow=Length[rowLoads]/6;
 startBlocks={1};
 signs={Sign[Total[rowLoads[[2;;6;;2]]]]};
-For[j=2,j<=nelx,j++,
+For[j=2,j<=totalBlocksInRow,j++,
 prev=Sign[Total[rowLoads[[6(j-1-1)+2;;6(j-1);;2]]]];
 next=Sign[Total[rowLoads[[6(j-1)+2;;6j;;2]]]];
 If[prev next<=0&&next!=0,
@@ -44,7 +45,7 @@ AppendTo[startBlocks,j-1];
 AppendTo[startBlocks,j];
 ];
 ];
-AppendTo[startBlocks,nelx];
+AppendTo[startBlocks,totalBlocksInRow];
 startBlocks=Partition[startBlocks,2];
 For[j=1,j<=Length[signs],j++,
 If[signs[[j]]<0,
@@ -123,7 +124,7 @@ Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
 ];
 
 
-solveRow[nRow_]:=Module[{j,startBlocks,blockNum,blockLoads,contact},
+solveRow[nRow_]:=Module[{j,startBlocks,blockLoads,contact},
 startBlocks=findStartBlocks[nRow];
 For[j=1,j<=Length[startBlocks],j++,
 Do[
@@ -134,25 +135,41 @@ updateStress[blockLoads,{nRow,k}];,
 {k,startBlocks[[j]]}
 ];
 ];
+
 (*TODO: check equilibrium at the vertical interfaces*)
 ];
 
 
-updateStress[pBlock_,blockPos_]:=Module[{blockNum},
-blockNum=getBlockNum[{blockPos[[1]],blockPos[[2]]}];
+updateStress[pBlock_,{nRow_,j_}]:=Module[{blockNum},
+blockNum=getBlockNum[{nRow,j}];
 \[Sigma]v[[blockNum]]=pBlock[[5;;16]];
-\[Sigma]h[[blockNum+blockPos[[1]]-1]]=pBlock[[1;;4]];(*interface on the left side of the current block*)
-\[Sigma]h[[blockNum+blockPos[[1]]]]=pBlock[[17;;20]];(*interface on the right side of the current block*)
+\[Sigma]h[[blockNum+nRow-1]]=pBlock[[1;;4]];(*interface on the left side of the current block*)
+\[Sigma]h[[blockNum+nRow]]=pBlock[[17;;20]];(*interface on the right side of the current block*)
 ];
 
 
 checkRowEquilibrium[pBlock_]:=pBlock[[17;;20]]=={0,0,0,0};
 
 
+transferContactActionsBelow[nRow_]:=Module[{j,totalBlocksInRowBelow},
+If[EvenQ[nRow+1],
+totalBlocksInRowBelow=nelx-1;,
+totalBlocksInRowBelow=nelx;
+];
+(*transfer base reactions of blocks in row nRow to the blocks in row nRow+1*)
+For[j=1,j<=totalBlocksInRowBelow,j++,
+updateStress[getBlockLoads[{nRow+1,j}],{nRow+1,j}];
+];
+];
+
+
 solveWall[]:=Module[{i},
 eqCheck=True;
 For[i=1,i<=nely&&eqCheck,i++,
 solveRow[i];
+If[i!=nely,
+transferContactActionsBelow[i];
+];
 ];
 ];
 

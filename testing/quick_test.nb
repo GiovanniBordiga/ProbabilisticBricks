@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      2461,         82]
-NotebookOptionsPosition[      2082,         65]
-NotebookOutlinePosition[      2418,         80]
-CellTagsIndexPosition[      2375,         77]
+NotebookDataLength[      2678,         89]
+NotebookOptionsPosition[      2264,         71]
+NotebookOutlinePosition[      2599,         86]
+CellTagsIndexPosition[      2556,         83]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -25,11 +25,17 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{
   RowBox[{"setProblemProperties", "[", 
-   RowBox[{"6", ",", "6", ",", "2", ",", "1", ",", "0.1", ",", "0.8", ",", 
-    RowBox[{"generateContacts", "[", "]"}]}], "]"}], ";"}]], "Input",
+   RowBox[{"6", ",", "6", ",", "2", ",", "1", ",", "0.1", ",", "0.8"}], "]"}],
+   ";"}]], "Input",
  CellChangeTimes->{{3.681703438754064*^9, 3.681703444105818*^9}, {
   3.681703482203299*^9, 3.681703508435005*^9}, {3.681703589170163*^9, 
-  3.681703591791724*^9}}],
+  3.681703591791724*^9}, {3.6818066807794333`*^9, 3.681806689506484*^9}, {
+  3.681806735400975*^9, 3.681806739838912*^9}, {3.6818067844805*^9, 
+  3.681806785174728*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"generateContacts", "[", "]"}], ";"}]], "Input"],
 
 Cell[BoxData[{
  RowBox[{
@@ -63,8 +69,8 @@ Cell[BoxData[
  RowBox[{"solveProblem", "[", "]"}]], "Input",
  CellChangeTimes->{{3.681703689430151*^9, 3.6817037136457853`*^9}}]
 },
-WindowSize->{683, 716},
-WindowMargins->{{Automatic, -10}, {Automatic, -10}},
+WindowSize->{683, 378},
+WindowMargins->{{23, Automatic}, {156, Automatic}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -80,13 +86,13 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[558, 20, 130, 2, 32, "Input"],
-Cell[691, 24, 373, 7, 32, "Input"],
-Cell[1067, 33, 719, 21, 77, "Input"],
-Cell[1789, 56, 158, 3, 32, "Input"],
-Cell[1950, 61, 128, 2, 32, "Input"]
+Cell[691, 24, 470, 9, 32, "Input"],
+Cell[1164, 35, 82, 2, 32, "Input"],
+Cell[1249, 39, 719, 21, 77, "Input"],
+Cell[1971, 62, 158, 3, 32, "Input"],
+Cell[2132, 67, 128, 2, 32, "Input"]
 }
 ]
 *)
 
 (* End of internal cache information *)
-
