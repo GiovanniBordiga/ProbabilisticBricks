@@ -31,11 +31,12 @@ j==nelx]
 isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
 
-findStartBlocks[nRow_]:=Module[{j,prev,next,signs,rowLoads,startBlocks},
+findStartBlocks[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks},
 rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
+totalBlocksInRow=Length[rowLoads]/6;
 startBlocks={1};
 signs={Sign[Total[rowLoads[[2;;6;;2]]]]};
-For[j=2,j<=nelx,j++,
+For[j=2,j<=totalBlocksInRow,j++,
 prev=Sign[Total[rowLoads[[6(j-1-1)+2;;6(j-1);;2]]]];
 next=Sign[Total[rowLoads[[6(j-1)+2;;6j;;2]]]];
 If[prev next<=0&&next!=0,
@@ -44,7 +45,7 @@ AppendTo[startBlocks,j-1];
 AppendTo[startBlocks,j];
 ];
 ];
-AppendTo[startBlocks,nelx];
+AppendTo[startBlocks,totalBlocksInRow];
 startBlocks=Partition[startBlocks,2];
 For[j=1,j<=Length[signs],j++,
 If[signs[[j]]<0,
@@ -123,7 +124,7 @@ Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
 ];
 
 
-solveRow[nRow_]:=Module[{j,startBlocks,blockNum,blockLoads,contact},
+solveRow[nRow_]:=Module[{j,startBlocks,blockLoads,contact},
 startBlocks=findStartBlocks[nRow];
 For[j=1,j<=Length[startBlocks],j++,
 Do[
