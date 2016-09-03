@@ -31,31 +31,24 @@ j==nelx]
 isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
 
-findSolvableBlockSequence[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks,blockSequence},
-rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
-totalBlocksInRow=Length[rowLoads]/6;
-startBlocks={1};
-signs={Sign[Total[rowLoads[[2;;6;;2]]]]};
-For[j=2,j<=totalBlocksInRow,j++,
-prev=Sign[Total[rowLoads[[6(j-1-1)+2;;6(j-1);;2]]]];
-next=Sign[Total[rowLoads[[6(j-1)+2;;6j;;2]]]];
-If[prev next<=0&&next!=0,
-AppendTo[signs,next];
-AppendTo[startBlocks,j-1];
-AppendTo[startBlocks,j];
-];
-];
-AppendTo[startBlocks,totalBlocksInRow];
-startBlocks=Partition[startBlocks,2];
-blockSequence=startBlocks;
-For[j=1,j<=Length[signs],j++,
-blockSequence[[j]]=Range[blockSequence[[j,1]],blockSequence[[j,2]]];(*'expand' startBlocks[[j]] into its range*)
-If[signs[[j]]<0,
+findSolvableBlockSequence[nRow_]:=Module[{j,shear,rowShears,blockSequence,len,direction, result},
+rowShears=Total[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],2;;6;;2]],{2}];
+rowShears=SplitBy[rowShears,#>0&];
+blockSequence={};len=0;direction={};
+For[j=1,j<=Length[rowShears],j++,
+shear=Total[rowShears[[j]]];
+AppendTo[blockSequence,Range[len+1,len+Length[rowShears[[j]]]]];
+If[shear<0,
 blockSequence[[j]]=Reverse[blockSequence[[j]]];
+AppendTo[direction,-1];,
+AppendTo[direction,1];
 ];
+len=Length[Flatten[blockSequence]];
 ];
 
-blockSequence
+result["seq"]=blockSequence;
+result["dir"]=direction;
+result
 ];
 
 
@@ -126,15 +119,15 @@ Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
 ];
 
 
-solveRow[nRow_]:=Module[{j,blockSequence,blockLoads,contact},
+solveRow[nRow_]:=Module[{j,blockSequence,directions,blockLoads,contact},
 blockSequence=findSolvableBlockSequence[nRow];
-For[j=1,j<=Length[blockSequence],j++,
+For[j=1,j<=Length[blockSequence["seq"]],j++,
 Do[
 blockLoads=getBlockLoads[{nRow,k}];
 contact=contacts[[getBlockNum[{nRow,k}]]];
-blockLoads=solveBlock[blockLoads,contact];
+blockLoads=solveBlock[blockLoads,contact,blockSequence["dir"][[j]]];
 updateStress[blockLoads,{nRow,k}];,
-{k,blockSequence[[j]]}
+{k,blockSequence["seq"][[j]]}
 ];
 ];
 
