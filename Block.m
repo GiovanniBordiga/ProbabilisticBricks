@@ -65,9 +65,8 @@ switchLR[solveBlockL2R[switchLR[pBlock],contact]]
 ];
 
 
-solveBlock[pBlock_,contact_]:=Module[{T},
-T=Total[pBlock[[6;;10;;2]]];
-If[T>=0,
+solveBlock[pBlock_,contact_,dir_]:=Module[{},
+If[dir>0,
 solveBlockL2R[pBlock,contact],
 solveBlockR2L[pBlock,contact]]
 ];
