@@ -30,6 +30,8 @@ j==nelx]
 
 isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 
+isBlockHalved[{nRow_,j_}]:=OddQ[nRow]&&(isBlockOnLeftEdge[{nRow,j}]||isBlockOnRightEdge[{nRow,j}]);
+
 
 findSolvableBlockSequence[nRow_]:=Module[{j,totalBlocksInRow,prev,next,signs,rowLoads,startBlocks,blockSequence},
 rowLoads=Flatten[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],1;;6]]];
