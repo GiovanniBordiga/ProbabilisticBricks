@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      2779,         90]
-NotebookOptionsPosition[      2364,         72]
-NotebookOutlinePosition[      2699,         87]
-CellTagsIndexPosition[      2656,         84]
+NotebookDataLength[      2826,         91]
+NotebookOptionsPosition[      2412,         73]
+NotebookOutlinePosition[      2746,         88]
+CellTagsIndexPosition[      2703,         85]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -53,13 +53,14 @@ Cell[BoxData[{
     RowBox[{"[", 
      RowBox[{"nelx", "/", "2"}], "]"}], "]"}], "=", 
    RowBox[{"{", 
-    RowBox[{"0", ",", "0", ",", "10", ",", "3", ",", "0", ",", "0"}], "}"}]}],
+    RowBox[{"0", ",", "0", ",", "10", ",", "6", ",", "0", ",", "0"}], "}"}]}],
    ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"p", "=", 
    RowBox[{"Flatten", "[", "p", "]"}]}], ";"}]}], "Input",
  CellChangeTimes->{{3.681702972797475*^9, 3.6817029924286222`*^9}, {
-  3.681703558847444*^9, 3.681703634108769*^9}}],
+  3.681703558847444*^9, 3.681703634108769*^9}, {3.68199048628489*^9, 
+  3.681990518312851*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -71,7 +72,7 @@ Cell[BoxData[
  CellChangeTimes->{{3.681703689430151*^9, 3.6817037136457853`*^9}}]
 },
 WindowSize->{683, 403},
-WindowMargins->{{Automatic, 51}, {116, Automatic}},
+WindowMargins->{{Automatic, 44}, {Automatic, 89}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -89,9 +90,9 @@ Notebook[{
 Cell[558, 20, 130, 2, 32, "Input"],
 Cell[691, 24, 570, 10, 32, "Input"],
 Cell[1264, 36, 82, 2, 32, "Input"],
-Cell[1349, 40, 719, 21, 77, "Input"],
-Cell[2071, 63, 158, 3, 32, "Input"],
-Cell[2232, 68, 128, 2, 32, "Input"]
+Cell[1349, 40, 767, 22, 77, "Input"],
+Cell[2119, 64, 158, 3, 32, "Input"],
+Cell[2280, 69, 128, 2, 32, "Input"]
 }
 ]
 *)
