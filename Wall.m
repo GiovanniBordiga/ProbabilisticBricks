@@ -4,13 +4,16 @@ BeginPackage["ProbabilisticBricks`Wall`"];
 
 
 getBlockNum::usage="getBlockNum[{nRow,j}] returns the block number corresponding to the postion {nRow,j}.";
+isBlockOnLeftEdge::usage="isBlockOnLeftEdge[{nRow,j}] returns True if the block in position {nRow,j} is on the left edge of the wall.";
+isBlockOnRightEdge::usage="isBlockOnRightEdge[{nRow,j}] returns True if the block in position {nRow,j} is on the right edge of the wall.";
+isBlockHalved::usage="isBlockHalved[{nRow,j}] returns True if the block in position {nRow,j} is half the size of a normal block."
 solveWall::usage="solveWall[] computes the stress vectors for the wall.";
 displayWall::usage="displayWall[] generates a drawing of the wall showing the stress path.";
 
 
 Begin["`Private`"];
 Needs["ProbabilisticBricks`Block`"];
-Needs["ProbabilisticBricks`Problem`"]
+Needs["ProbabilisticBricks`Problem`"];
 
 
 getBlockNum[{nRow_,j_}]:=Module[{nBlock},
@@ -33,28 +36,8 @@ isBlockOnLeftEdge[{nRow_,j_}]:=j==1;
 isBlockHalved[{nRow_,j_}]:=OddQ[nRow]&&(isBlockOnLeftEdge[{nRow,j}]||isBlockOnRightEdge[{nRow,j}]);
 
 
-findSolvableBlockSequence[nRow_]:=Module[{j,shear,rowShears,blockSequence,len,direction, result},
-rowShears=Total[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],2;;6;;2]],{2}];
-rowShears=SplitBy[rowShears,#>0&];
-blockSequence={};len=0;direction={};
-For[j=1,j<=Length[rowShears],j++,
-shear=Total[rowShears[[j]]];
-AppendTo[blockSequence,Range[len+1,len+Length[rowShears[[j]]]]];
-If[shear<0,
-blockSequence[[j]]=Reverse[blockSequence[[j]]];
-AppendTo[direction,-1];,
-AppendTo[direction,1];
-];
-len=Length[Flatten[blockSequence]];
-];
-
-result["seq"]=blockSequence;
-result["dir"]=direction;
-result
-];
-
-
-getBlockLoads[{nRow_,j_}]:=Module[{pvnew,Ns,Ts,Ncs,Tcs,Ncd,Tcd,Nd,Td,nBlock,blockULPos,blockURPos,nBlockUL,nBlockUR},nBlock=getBlockNum[{nRow,j}];
+getBlockLoads[{nRow_,j_}]:=Module[{pvnew,Ns,Ts,Ncs,Tcs,Ncd,Tcd,Nd,Td,nBlock,blockULPos,blockURPos,nBlockUL,nBlockUR},
+nBlock=getBlockNum[{nRow,j}];
 
 If[nRow==1,
 
@@ -114,10 +97,31 @@ Nd=0;Td=0;Ncd=0;Tcd=0;
 ];
 ];
 ];
-pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};(*TODO: modify to support edge blocks!*)
+pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};
 ];
 
 Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
+];
+
+
+findSolvableBlockSequence[nRow_]:=Module[{j,shear,rowShears,blockSequence,len,direction, result},
+rowShears=Total[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],2;;6;;2]],{2}];
+rowShears=SplitBy[rowShears,#>0&];
+blockSequence={};len=0;direction={};
+For[j=1,j<=Length[rowShears],j++,
+shear=Total[rowShears[[j]]];
+AppendTo[blockSequence,Range[len+1,len+Length[rowShears[[j]]]]];
+If[shear<0,
+blockSequence[[j]]=Reverse[blockSequence[[j]]];
+AppendTo[direction,-1];,
+AppendTo[direction,1];
+];
+len=Length[Flatten[blockSequence]];
+];
+
+result["seq"]=blockSequence;
+result["dir"]=direction;
+result
 ];
 
 
@@ -127,7 +131,7 @@ For[j=1,j<=Length[blockSequence["seq"]],j++,
 Do[
 blockLoads=getBlockLoads[{nRow,k}];
 contact=contacts[[getBlockNum[{nRow,k}]]];
-blockLoads=solveBlock[blockLoads,contact,blockSequence["dir"][[j]]];
+blockLoads=solveBlock[blockLoads,contact,{nRow,k},blockSequence["dir"][[j]]];
 updateStress[blockLoads,{nRow,k}];,
 {k,blockSequence["seq"][[j]]}
 ];
