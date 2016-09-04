@@ -8,9 +8,7 @@ solveBlock::usage="solveBlock[pBlock, contact] returns the vector of interface f
 
 Begin["`Private`"];
 Needs["ProbabilisticBricks`Problem`"];
-
-
-V[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
+Needs["ProbabilisticBricks`Wall`"];
 
 
 switchLR[p_]:=Module[{pnew},
@@ -26,6 +24,9 @@ pnew[[12;;16;;2]]=-p[[16;;12;;-2]];(*Vs\[UndirectedEdge]Vc\[UndirectedEdge]Vd*)
 
 pnew
 ];
+
+
+V[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
 
 
 solveBlockL2R[pBlock_,contact_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt},
@@ -60,15 +61,64 @@ Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];
 ];
 
 
-solveBlockR2L[pBlock_,contact_]:=Module[{pBlockR2L},
-switchLR[solveBlockL2R[switchLR[pBlock],contact]]
+solveHalvedBlockL2R[pBlock_,isOnLeftEdge_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt},
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=pBlock;
+
+(*solution left to right*)
+Ldu=0;Vdu=0;Ldb=0;Vdb=0;
+Rt=Vsu+Vsb+Ns+Nc+P/2+Nd-Vdu-Vdb;
+H=Lsu+Lsb+Ts+Tc+Td-Ldu-Ldb;
+
+(*modify resultants for the halved block*)
+If[isOnLeftEdge,
+(*halved block on the left edge*)
+Md=(Ns+Vsu+Vsb+Nc/2+P/2/4)b-h(Lsu-Ldu+Ts+Tc+Td);
+Mc=(Ns+Vsu+Vsb-Nd+Vdu+Vdb)b/2-h(Lsu-Ldu+Ts+Tc+Td)-P/2b/4;
+(*compute reactions for the halved block - only one mechanism*)
+Rs=0;
+Rd=Piecewise[{{Max[-Mc/(b/2),0],Md>=0},{Rt,Md<0}}];
+Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];,
+(*halved block on the right edge*)
+Ms=(Nc/2+P/2/4+Nd-Vdu-Vdb)b+h(Lsu-Ldu+Ts+Tc+Td);
+Md=(Ns+Vsu+Vsb-Nd+Vdu+Vdb)b/2-h(Lsu-Ldu+Ts+Tc+Td)+P/2b/4;
+(*compute reactions for the halved block - only one mechanism*)
+Rd=0;
+Rc=Piecewise[{{Max[Ms/(b/2),0],Md>=0},{Rt,Md<0}}];
+Rs=Piecewise[{{Max[Rt-Rc-Rd,0],Md>=0},{0,Md<0}}];
+];
+
+Ldu=Max[-Md/h,0];
+Vs=V[H,Rt,\[Mu],Rs];
+Vc=V[H,Rt,\[Mu],Rc];
+Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
+Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];
+
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
 ];
 
 
-solveBlock[pBlock_,contact_,dir_]:=Module[{},
+solveBlockR2L[pBlock_,contact_]:=Module[{},
+switchLR[solveBlockL2R[switchLR[pBlock],contact]]
+];
+
+solveHalvedBlockR2L[pBlock_,isOnLeftEdge_]:=Module[{},
+switchLR[solveHalvedBlockL2R[switchLR[pBlock],!isOnLeftEdge]]
+];
+
+
+solveBlock[pBlock_,contact_,{nRow_,j_},dir_]:=Module[{},
+If[!isBlockHalved[{nRow,j}],
+(*normal blocks*)
 If[dir>0,
 solveBlockL2R[pBlock,contact],
-solveBlockR2L[pBlock,contact]]
+solveBlockR2L[pBlock,contact]
+],
+(*halved blocks*)
+If[dir>0,
+solveHalvedBlockL2R[pBlock,isBlockOnLeftEdge[{nRow,j}]],
+solveHalvedBlockR2L[pBlock,isBlockOnLeftEdge[{nRow,j}]]
+]
+]
 ];
 
 
