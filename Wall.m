@@ -104,9 +104,10 @@ Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
 ];
 
 
-findSolvableBlockSequence[nRow_]:=Module[{j,shear,rowShears,blockSequence,len,direction, result},
+findSolvableBlockSequence[nRow_]:=Module[{j,shear,rowShears,blockSequence,len,direction,criticalBlocks,result},
 rowShears=Total[\[Sigma]v[[getBlockNum[{nRow,1}];;getBlockNum[{nRow+1,0}],2;;6;;2]],{2}];
 rowShears=SplitBy[rowShears,#>0&];
+(*build block sequence and direction lists*)
 blockSequence={};len=0;direction={};
 For[j=1,j<=Length[rowShears],j++,
 shear=Total[rowShears[[j]]];
@@ -118,14 +119,22 @@ AppendTo[direction,1];
 ];
 len=Length[Flatten[blockSequence]];
 ];
+(*find potentially critical blocks in the sequence*)
+criticalBlocks={};
+For[j=2,j<=Length[direction],j++,
+If[direction[[j-1]]>0&&direction[[j]]<0,
+AppendTo[criticalBlocks,{Last[blockSequence[[j-1]]],Last[blockSequence[[j]]]}];
+];
+];
 
 result["seq"]=blockSequence;
 result["dir"]=direction;
+result["cri"]=criticalBlocks;
 result
 ];
 
 
-solveRow[nRow_]:=Module[{j,blockSequence,directions,blockLoads,contact},
+solveRow[nRow_]:=Module[{j,blockSequence,blockLoads,contact},
 blockSequence=findSolvableBlockSequence[nRow];
 For[j=1,j<=Length[blockSequence["seq"]],j++,
 Do[
