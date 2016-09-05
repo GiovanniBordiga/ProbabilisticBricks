@@ -154,7 +154,8 @@ updateStress[blockLoads,{nRow,k}];,
 ];
 ];
 
-(*TODO: check equilibrium at the vertical interfaces*)
+(*return the equilibrium check*)
+checkRowEquilibrium[nRow,blockSequence["cri"]]
 ];
 
 
@@ -166,15 +167,22 @@ blockNum=getBlockNum[{nRow,j}];
 ];
 
 
-checkRowEquilibrium[nRow_,criticalBlocksInRow_]:=Module[{rowEqCheck,firstBlockLoads,lastBlockLoads,leftBlockLoads,rightBlockLoads},
+checkRowEquilibrium[nRow_,criticalBlocksInRow_]:=Module[{rowEqCheck,firstBlockLoads,lastBlockLoads,leftBlockLoads,rightBlockLoads,contact},
 (*check first and last block in the row*)
 firstBlockLoads=getBlockLoads[{nRow,1}];
 lastBlockLoads=getBlockLoads[{nRow,getTotalBlocksInRow[nRow]}];
 rowEqCheck=firstBlockLoads[[1;;4]]==lastBlockLoads[[17;;20]]=={0,0,0,0};
 (*check the interface of each pair of critical blocks*)
 For[j=1,j<=Length[criticalBlocksInRow],j++,
+(*solve the left block*)
 leftBlockLoads=getBlockLoads[{nRow,criticalBlocksInRow[[j,1]]}];
+contact=contacts[[getBlockNum[{nRow,criticalBlocksInRow[[j,1]]}]]];
+leftBlockLoads=solveBlock[leftBlockLoads,contact,{nRow,criticalBlocksInRow[[j,1]]},1];
+(*solve the right block*)
 rightBlockLoads=getBlockLoads[{nRow,criticalBlocksInRow[[j,2]]}];
+contact=contacts[[getBlockNum[{nRow,criticalBlocksInRow[[j,2]]}]]];
+rightBlockLoads=solveBlock[rightBlockLoads,contact,{nRow,criticalBlocksInRow[[j,2]]},-1];
+(*check the interface*)
 rowEqCheck=leftBlockLoads[[17;;20]]==rightBlockLoads[[1;;4]];
 ];
 
@@ -194,7 +202,7 @@ updateStress[getBlockLoads[{nRow+1,j}],{nRow+1,j}];
 solveWall[]:=Module[{i},
 eqCheck=True;
 For[i=1,i<=nely&&eqCheck,i++,
-solveRow[i];
+eqCheck=solveRow[i];
 If[i!=nely,
 transferContactActionsBelow[i];
 ];

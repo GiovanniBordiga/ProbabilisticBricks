@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     69605,       1857]
-NotebookOptionsPosition[     68071,       1808]
-NotebookOutlinePosition[     68404,       1823]
-CellTagsIndexPosition[     68361,       1820]
+NotebookDataLength[     77851,       2042]
+NotebookOptionsPosition[     76311,       1993]
+NotebookOutlinePosition[     76644,       2008]
+CellTagsIndexPosition[     76601,       2005]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -672,6 +672,18 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{
    RowBox[{
+    RowBox[{"getTotalBlocksInRow", "[", "nRow_", "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "}"}], ",", "\n", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"EvenQ", "[", "nRow", "]"}], ",", "\n", 
+        RowBox[{"nelx", "-", "1"}], ",", "\n", "nelx"}], "\n", "]"}]}], "\n", 
+     "]"}]}], ";"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
     RowBox[{"isBlockOnRightEdge", "[", 
      RowBox[{"{", 
       RowBox[{"nRow_", ",", "j_"}], "}"}], "]"}], ":=", 
@@ -707,7 +719,8 @@ Cell[BoxData[{
       RowBox[{"isBlockOnRightEdge", "[", 
        RowBox[{"{", 
         RowBox[{"nRow", ",", "j"}], "}"}], "]"}]}], ")"}]}]}], 
-  ";"}]}], "Input"],
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.682050546582775*^9, 3.682050675398883*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1022,7 +1035,8 @@ Cell[BoxData[
      RowBox[{"{", 
       RowBox[{
       "j", ",", "shear", ",", "rowShears", ",", "blockSequence", ",", "len", 
-       ",", "direction", ",", " ", "result"}], "}"}], ",", "\n", 
+       ",", "direction", ",", "criticalBlocks", ",", "result"}], "}"}], ",", 
+     "\n", 
      RowBox[{
       RowBox[{"rowShears", "=", 
        RowBox[{"Total", "[", 
@@ -1045,6 +1059,10 @@ Cell[BoxData[
         RowBox[{"rowShears", ",", 
          RowBox[{
           RowBox[{"#", ">", "0"}], "&"}]}], "]"}]}], ";", "\n", 
+      RowBox[{"(*", 
+       RowBox[{
+       "build", " ", "block", " ", "sequence", " ", "and", " ", "direction", 
+        " ", "lists"}], "*)"}], "\n", 
       RowBox[{"blockSequence", "=", 
        RowBox[{"{", "}"}]}], ";", 
       RowBox[{"len", "=", "0"}], ";", 
@@ -1091,13 +1109,57 @@ Cell[BoxData[
          RowBox[{"len", "=", 
           RowBox[{"Length", "[", 
            RowBox[{"Flatten", "[", "blockSequence", "]"}], "]"}]}], ";"}]}], 
-       "\n", "]"}], ";", "\n", "\n", 
+       "\n", "]"}], ";", "\n", 
+      RowBox[{"(*", 
+       RowBox[{
+       "find", " ", "potentially", " ", "critical", " ", "blocks", " ", "in", 
+        " ", "the", " ", "sequence"}], "*)"}], "\n", 
+      RowBox[{"criticalBlocks", "=", 
+       RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"j", "=", "2"}], ",", 
+        RowBox[{"j", "\[LessEqual]", 
+         RowBox[{"Length", "[", "direction", "]"}]}], ",", 
+        RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"direction", "[", 
+              RowBox[{"[", 
+               RowBox[{"j", "-", "1"}], "]"}], "]"}], ">", "0"}], "&&", 
+            RowBox[{
+             RowBox[{"direction", "[", 
+              RowBox[{"[", "j", "]"}], "]"}], "<", "0"}]}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"criticalBlocks", ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"Last", "[", 
+                 RowBox[{"blockSequence", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"j", "-", "1"}], "]"}], "]"}], "]"}], ",", 
+                RowBox[{"Last", "[", 
+                 RowBox[{"blockSequence", "[", 
+                  RowBox[{"[", "j", "]"}], "]"}], "]"}]}], "}"}]}], "]"}], 
+            ";"}]}], "\[IndentingNewLine]", "]"}], ";"}]}], 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", "\n", 
       RowBox[{
        RowBox[{"result", "[", "\"\<seq\>\"", "]"}], "=", "blockSequence"}], 
       ";", "\n", 
       RowBox[{
        RowBox[{"result", "[", "\"\<dir\>\"", "]"}], "=", "direction"}], ";", 
-      "\n", "result"}]}], "\n", "]"}]}], ";"}]], "Input"],
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"result", "[", "\"\<cri\>\"", "]"}], "=", "criticalBlocks"}], 
+      ";", "\n", "result"}]}], "\n", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.682049387356702*^9, 3.682049416833455*^9}, {
+  3.682049450639785*^9, 3.682049597671636*^9}, {3.68204965918861*^9, 
+  3.682049712601025*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1106,9 +1168,8 @@ Cell[BoxData[
    RowBox[{"Module", "[", 
     RowBox[{
      RowBox[{"{", 
-      RowBox[{
-      "j", ",", "blockSequence", ",", "directions", ",", "blockLoads", ",", 
-       "contact"}], "}"}], ",", "\n", 
+      RowBox[{"j", ",", "blockSequence", ",", "blockLoads", ",", "contact"}], 
+      "}"}], ",", "\n", 
      RowBox[{
       RowBox[{"blockSequence", "=", 
        RowBox[{"findSolvableBlockSequence", "[", "nRow", "]"}]}], ";", "\n", 
@@ -1151,12 +1212,16 @@ Cell[BoxData[
              RowBox[{
               RowBox[{"blockSequence", "[", "\"\<seq\>\"", "]"}], "[", 
               RowBox[{"[", "j", "]"}], "]"}]}], "}"}]}], "\n", "]"}], ";"}]}],
-        "\n", "]"}], ";"}]}], "\n", "\n", 
-    RowBox[{"(*", 
-     RowBox[{"TODO", ":", " ", 
-      RowBox[{
-      "check", " ", "equilibrium", " ", "at", " ", "the", " ", "vertical", 
-       " ", "interfaces"}]}], "*)"}], "\n", "]"}]}], ";"}]], "Input"],
+        "\n", "]"}], ";", "\n", "\n", 
+      RowBox[{"(*", 
+       RowBox[{"return", " ", "the", " ", "equilibrium", " ", "check"}], 
+       "*)"}], "\n", 
+      RowBox[{"checkRowEquilibrium", "[", 
+       RowBox[{"nRow", ",", 
+        RowBox[{"blockSequence", "[", "\"\<cri\>\"", "]"}]}], "]"}]}]}], "\n",
+     "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.682049617728827*^9, 3.682049620136106*^9}, {
+  3.682052302371763*^9, 3.682052397915592*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1206,13 +1271,133 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{
   RowBox[{
-   RowBox[{"checkRowEquilibrium", "[", "pBlock_", "]"}], ":=", 
-   RowBox[{
-    RowBox[{"pBlock", "[", 
-     RowBox[{"[", 
-      RowBox[{"17", ";;", "20"}], "]"}], "]"}], "==", 
-    RowBox[{"{", 
-     RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}]}]}], ";"}]], "Input"],
+   RowBox[{"checkRowEquilibrium", "[", 
+    RowBox[{"nRow_", ",", "criticalBlocksInRow_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "rowEqCheck", ",", "firstBlockLoads", ",", "lastBlockLoads", ",", 
+       "leftBlockLoads", ",", "rightBlockLoads", ",", "contact"}], "}"}], ",",
+      "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+      "check", " ", "first", " ", "and", " ", "last", " ", "block", " ", "in",
+        " ", "the", " ", "row"}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"firstBlockLoads", "=", 
+       RowBox[{"getBlockLoads", "[", 
+        RowBox[{"{", 
+         RowBox[{"nRow", ",", "1"}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"lastBlockLoads", "=", 
+       RowBox[{"getBlockLoads", "[", 
+        RowBox[{"{", 
+         RowBox[{"nRow", ",", 
+          RowBox[{"getTotalBlocksInRow", "[", "nRow", "]"}]}], "}"}], "]"}]}],
+       ";", "\[IndentingNewLine]", 
+      RowBox[{"rowEqCheck", "=", 
+       RowBox[{
+        RowBox[{"firstBlockLoads", "[", 
+         RowBox[{"[", 
+          RowBox[{"1", ";;", "4"}], "]"}], "]"}], "\[Equal]", 
+        RowBox[{"lastBlockLoads", "[", 
+         RowBox[{"[", 
+          RowBox[{"17", ";;", "20"}], "]"}], "]"}], "\[Equal]", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "check", " ", "the", " ", "interface", " ", "of", " ", "each", " ", 
+        "pair", " ", "of", " ", "critical", " ", "blocks"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"For", "[", 
+       RowBox[{
+        RowBox[{"j", "=", "1"}], ",", 
+        RowBox[{"j", "\[LessEqual]", 
+         RowBox[{"Length", "[", "criticalBlocksInRow", "]"}]}], ",", 
+        RowBox[{"j", "++"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{"solve", " ", "the", " ", "left", " ", "block"}], "*)"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"leftBlockLoads", "=", 
+          RowBox[{"getBlockLoads", "[", 
+           RowBox[{"{", 
+            RowBox[{"nRow", ",", 
+             RowBox[{"criticalBlocksInRow", "[", 
+              RowBox[{"[", 
+               RowBox[{"j", ",", "1"}], "]"}], "]"}]}], "}"}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"contact", "=", 
+          RowBox[{"contacts", "[", 
+           RowBox[{"[", 
+            RowBox[{"getBlockNum", "[", 
+             RowBox[{"{", 
+              RowBox[{"nRow", ",", 
+               RowBox[{"criticalBlocksInRow", "[", 
+                RowBox[{"[", 
+                 RowBox[{"j", ",", "1"}], "]"}], "]"}]}], "}"}], "]"}], "]"}],
+            "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"leftBlockLoads", "=", 
+          RowBox[{"solveBlock", "[", 
+           RowBox[{"leftBlockLoads", ",", "contact", ",", 
+            RowBox[{"{", 
+             RowBox[{"nRow", ",", 
+              RowBox[{"criticalBlocksInRow", "[", 
+               RowBox[{"[", 
+                RowBox[{"j", ",", "1"}], "]"}], "]"}]}], "}"}], ",", "1"}], 
+           "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"(*", 
+          RowBox[{"solve", " ", "the", " ", "right", " ", "block"}], "*)"}], 
+         "\[IndentingNewLine]", 
+         RowBox[{"rightBlockLoads", "=", 
+          RowBox[{"getBlockLoads", "[", 
+           RowBox[{"{", 
+            RowBox[{"nRow", ",", 
+             RowBox[{"criticalBlocksInRow", "[", 
+              RowBox[{"[", 
+               RowBox[{"j", ",", "2"}], "]"}], "]"}]}], "}"}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"contact", "=", 
+          RowBox[{"contacts", "[", 
+           RowBox[{"[", 
+            RowBox[{"getBlockNum", "[", 
+             RowBox[{"{", 
+              RowBox[{"nRow", ",", 
+               RowBox[{"criticalBlocksInRow", "[", 
+                RowBox[{"[", 
+                 RowBox[{"j", ",", "2"}], "]"}], "]"}]}], "}"}], "]"}], "]"}],
+            "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"rightBlockLoads", "=", 
+          RowBox[{"solveBlock", "[", 
+           RowBox[{"rightBlockLoads", ",", "contact", ",", 
+            RowBox[{"{", 
+             RowBox[{"nRow", ",", 
+              RowBox[{"criticalBlocksInRow", "[", 
+               RowBox[{"[", 
+                RowBox[{"j", ",", "2"}], "]"}], "]"}]}], "}"}], ",", 
+            RowBox[{"-", "1"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"(*", 
+          RowBox[{"check", " ", "the", " ", "interface"}], "*)"}], 
+         "\[IndentingNewLine]", 
+         RowBox[{"rowEqCheck", "=", 
+          RowBox[{
+           RowBox[{"leftBlockLoads", "[", 
+            RowBox[{"[", 
+             RowBox[{"17", ";;", "20"}], "]"}], "]"}], "==", 
+           RowBox[{"rightBlockLoads", "[", 
+            RowBox[{"[", 
+             RowBox[{"1", ";;", "4"}], "]"}], "]"}]}]}], ";"}]}], 
+       "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", "rowEqCheck"}]}], "\[IndentingNewLine]", "]"}]}],
+   ";"}]], "Input",
+ CellChangeTimes->{{3.682049163852577*^9, 3.6820492737982903`*^9}, {
+  3.682049961638883*^9, 3.682050250511572*^9}, {3.68205031076616*^9, 
+  3.682050462912475*^9}, {3.682050970776833*^9, 3.682051027749893*^9}, {
+  3.682051082789904*^9, 3.682051214341598*^9}, {3.682051249083994*^9, 
+  3.682051267446239*^9}, {3.682053482678855*^9, 3.682053797958164*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1223,16 +1408,9 @@ Cell[BoxData[
      RowBox[{"{", 
       RowBox[{"j", ",", "totalBlocksInRowBelow"}], "}"}], ",", "\n", 
      RowBox[{
-      RowBox[{"If", "[", 
-       RowBox[{
-        RowBox[{"EvenQ", "[", 
-         RowBox[{"nRow", "+", "1"}], "]"}], ",", "\n", 
-        RowBox[{
-         RowBox[{"totalBlocksInRowBelow", "=", 
-          RowBox[{"nelx", "-", "1"}]}], ";"}], ",", "\n", 
-        RowBox[{
-         RowBox[{"totalBlocksInRowBelow", "=", "nelx"}], ";"}]}], "\n", "]"}],
-       ";", "\n", 
+      RowBox[{"totalBlocksInRowBelow", "=", 
+       RowBox[{"getTotalBlocksInRow", "[", 
+        RowBox[{"nRow", "+", "1"}], "]"}]}], ";", "\n", 
       RowBox[{"(*", 
        RowBox[{
         RowBox[{
@@ -1255,7 +1433,8 @@ Cell[BoxData[
            RowBox[{"{", 
             RowBox[{
              RowBox[{"nRow", "+", "1"}], ",", "j"}], "}"}]}], "]"}], ";"}]}], 
-       "\n", "]"}], ";"}]}], "\n", "]"}]}], ";"}]], "Input"],
+       "\n", "]"}], ";"}]}], "\n", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.68205079857285*^9, 3.6820508116694202`*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1273,14 +1452,16 @@ Cell[BoxData[
          RowBox[{"i", "<=", "nely"}], "&&", "eqCheck"}], ",", 
         RowBox[{"i", "++"}], ",", "\n", 
         RowBox[{
-         RowBox[{"solveRow", "[", "i", "]"}], ";", "\n", 
+         RowBox[{"eqCheck", "=", 
+          RowBox[{"solveRow", "[", "i", "]"}]}], ";", "\n", 
          RowBox[{"If", "[", 
           RowBox[{
            RowBox[{"i", "!=", "nely"}], ",", "\n", 
            RowBox[{
             RowBox[{"transferContactActionsBelow", "[", "i", "]"}], ";"}]}], 
           "\n", "]"}], ";"}]}], "\n", "]"}], ";"}]}], "\n", "]"}]}], 
-  ";"}]], "Input"],
+  ";"}]], "Input",
+ CellChangeTimes->{{3.682052440950224*^9, 3.68205244279169*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1306,15 +1487,8 @@ Cell[BoxData[
         RowBox[{"i", "<=", "nely"}], ",", 
         RowBox[{"i", "++"}], ",", "\n", 
         RowBox[{
-         RowBox[{"If", "[", 
-          RowBox[{
-           RowBox[{"EvenQ", "[", "i", "]"}], ",", "\n", 
-           RowBox[{
-            RowBox[{"totalBlocksInRow", "=", 
-             RowBox[{"nelx", "-", "1"}]}], ";"}], ",", "\n", 
-           RowBox[{
-            RowBox[{"totalBlocksInRow", "=", "nelx"}], ";"}]}], "\n", "]"}], 
-         ";", "\n", 
+         RowBox[{"totalBlocksInRow", "=", 
+          RowBox[{"getTotalBlocksInRow", "[", "i", "]"}]}], ";", "\n", 
          RowBox[{"For", "[", 
           RowBox[{
            RowBox[{"j", "=", "1"}], ",", 
@@ -1551,7 +1725,8 @@ Cell[BoxData[
        RowBox[{
         RowBox[{"Graphics", "[", "blocks", "]"}], ",", 
         RowBox[{"Graphics", "[", "interfaces", "]"}]}], "]"}]}]}], "]"}]}], 
-  ";"}]], "Input"]
+  ";"}]], "Input",
+ CellChangeTimes->{{3.682050861928035*^9, 3.6820508895685987`*^9}}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1722,7 +1897,9 @@ Cell[BoxData[
    3.681907207986231*^9, 3.681907211109733*^9}, {3.6819072904716043`*^9, 
    3.681907318492744*^9}, {3.68190737181026*^9, 3.6819073739948874`*^9}, {
    3.681984744350996*^9, 3.681984749121591*^9}, 3.681987871919908*^9, {
-   3.681988934471201*^9, 3.681988937366481*^9}}],
+   3.681988934471201*^9, 3.681988937366481*^9}, {3.6820480258573427`*^9, 
+   3.682048030721792*^9}, 3.682052922168651*^9, {3.682053220907321*^9, 
+   3.682053223142548*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1741,7 +1918,7 @@ Cell[BoxData[
      RowBox[{"Table", "[", 
       RowBox[{
        RowBox[{"{", 
-        RowBox[{"0", ",", "0", ",", "0.2", ",", "0", ",", "0", ",", "0"}], 
+        RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0"}], 
         "}"}], ",", 
        RowBox[{"{", "nelx", "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
    RowBox[{
@@ -1749,7 +1926,7 @@ Cell[BoxData[
      RowBox[{"p", "[", 
       RowBox[{"[", "2", "]"}], "]"}], "=", 
      RowBox[{"{", 
-      RowBox[{"0", ",", "0", ",", "10", ",", "9", ",", "0", ",", "0"}], 
+      RowBox[{"0", ",", "0", ",", "10", ",", "0", ",", "0", ",", "0"}], 
       "}"}]}], ";"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
@@ -1764,7 +1941,7 @@ Cell[BoxData[
       RowBox[{"[", "35", "]"}], "]"}], "=", 
      RowBox[{"{", 
       RowBox[{"0", ",", "0", ",", "10", ",", 
-       RowBox[{"-", "5"}], ",", "0", ",", "0"}], "}"}]}], ";"}], 
+       RowBox[{"-", "1"}], ",", "0", ",", "0"}], "}"}]}], ";"}], 
    "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"p", "=", 
@@ -1795,7 +1972,15 @@ Cell[BoxData[
    3.681907337372348*^9, 3.681907359370723*^9}, {3.681907401993403*^9, 
    3.681907472290341*^9}, 3.681984775270701*^9, 3.6819848078613043`*^9, {
    3.6819889646652813`*^9, 3.681988974225561*^9}, {3.681989025847781*^9, 
-   3.681989044890935*^9}, {3.6819891814109907`*^9, 3.6819891823458767`*^9}}],
+   3.681989044890935*^9}, {3.6819891814109907`*^9, 3.6819891823458767`*^9}, {
+   3.6820480415836763`*^9, 3.682048065288439*^9}, {3.682048148401375*^9, 
+   3.682048157546109*^9}, {3.682048766847742*^9, 3.682048844926646*^9}, {
+   3.682052633390891*^9, 3.682052655228097*^9}, {3.6820528194746017`*^9, 
+   3.6820528760431128`*^9}, {3.6820529409237537`*^9, 
+   3.6820529463714027`*^9}, {3.6820530610320683`*^9, 3.682053075621449*^9}, {
+   3.6820532287843237`*^9, 3.6820532534343987`*^9}, {3.6820532945514097`*^9, 
+   3.682053295342679*^9}, {3.682053907916402*^9, 3.682053957988512*^9}, 
+   3.6820540393831863`*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -1829,35 +2014,35 @@ Cell[4179, 123, 691, 22, 32, "Input"],
 Cell[4873, 147, 6543, 173, 693, "Input"],
 Cell[11419, 322, 8824, 229, 781, "Input"],
 Cell[20246, 553, 874, 26, 165, "Input"],
-Cell[21123, 581, 1554, 40, 319, "Input"]
+Cell[21123, 581, 1554, 40, 341, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[22714, 626, 116, 1, 65, "Section"],
-Cell[22833, 629, 2517, 80, 407, "Input"],
-Cell[25353, 711, 12685, 302, 1463, "Input"],
-Cell[38041, 1015, 3225, 84, 429, "Input"],
-Cell[41269, 1101, 2284, 57, 319, "Input"],
-Cell[43556, 1160, 1548, 43, 143, "Input"],
-Cell[45107, 1205, 308, 9, 32, "Input"],
-Cell[45418, 1216, 1520, 41, 231, "Input"],
-Cell[46941, 1259, 790, 23, 209, "Input"],
-Cell[47734, 1284, 11050, 269, 825, "Input"]
+Cell[22833, 629, 2973, 93, 627, "Input"],
+Cell[25809, 724, 12685, 302, 1925, "Input"],
+Cell[38497, 1028, 5240, 133, 803, "Input"],
+Cell[43740, 1163, 2455, 60, 385, "Input"],
+Cell[46198, 1225, 1548, 43, 187, "Input"],
+Cell[47749, 1270, 5472, 129, 759, "Input"],
+Cell[53224, 1401, 1365, 35, 209, "Input"],
+Cell[54592, 1438, 892, 25, 209, "Input"],
+Cell[55487, 1465, 10881, 263, 1177, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[58821, 1558, 119, 1, 65, "Section"],
-Cell[58943, 1561, 1428, 40, 187, "Input"],
-Cell[60374, 1603, 678, 19, 143, "Input"],
-Cell[61055, 1624, 378, 12, 77, "Input"],
-Cell[61436, 1638, 275, 9, 77, "Input"],
-Cell[61714, 1649, 1013, 30, 121, "Input"],
-Cell[62730, 1681, 351, 10, 121, "Input"]
+Cell[66405, 1733, 119, 1, 65, "Section"],
+Cell[66527, 1736, 1428, 40, 187, "Input"],
+Cell[67958, 1778, 678, 19, 143, "Input"],
+Cell[68639, 1799, 378, 12, 77, "Input"],
+Cell[69020, 1813, 275, 9, 77, "Input"],
+Cell[69298, 1824, 1013, 30, 121, "Input"],
+Cell[70314, 1856, 351, 10, 121, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[63118, 1696, 91, 1, 65, "Section"],
-Cell[63212, 1699, 1186, 25, 77, "Input"],
-Cell[64401, 1726, 255, 6, 55, "Input"],
-Cell[64659, 1734, 3097, 63, 165, "Input"],
-Cell[67759, 1799, 296, 6, 55, "Input"]
+Cell[70702, 1871, 91, 1, 65, "Section"],
+Cell[70796, 1874, 1310, 27, 77, "Input"],
+Cell[72109, 1903, 255, 6, 55, "Input"],
+Cell[72367, 1911, 3629, 71, 165, "Input"],
+Cell[75999, 1984, 296, 6, 55, "Input"]
 }, Open  ]]
 }
 ]
