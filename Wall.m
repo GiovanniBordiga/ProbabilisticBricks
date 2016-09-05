@@ -4,6 +4,7 @@ BeginPackage["ProbabilisticBricks`Wall`"];
 
 
 getBlockNum::usage="getBlockNum[{nRow,j}] returns the block number corresponding to the postion {nRow,j}.";
+getTotalBlocksInRow::usage="getTotalBlocksInRow[nRow] returns the number of blocks in the nRow row.";
 isBlockOnLeftEdge::usage="isBlockOnLeftEdge[{nRow,j}] returns True if the block in position {nRow,j} is on the left edge of the wall.";
 isBlockOnRightEdge::usage="isBlockOnRightEdge[{nRow,j}] returns True if the block in position {nRow,j} is on the right edge of the wall.";
 isBlockHalved::usage="isBlockHalved[{nRow,j}] returns True if the block in position {nRow,j} is half the size of a normal block."
@@ -23,6 +24,13 @@ nBlock=nelx (nRow-1)/2+(nelx-1)(nRow-1)/2;
 ];
 
 nBlock+=j
+];
+
+getTotalBlocksInRow[nRow_]:=Module[{},
+If[EvenQ[nRow],
+nelx-1,
+nelx
+]
 ];
 
 isBlockOnRightEdge[{nRow_,j_}]:=Module[{},
@@ -162,10 +170,7 @@ checkRowEquilibrium[pBlock_]:=pBlock[[17;;20]]=={0,0,0,0};
 
 
 transferContactActionsBelow[nRow_]:=Module[{j,totalBlocksInRowBelow},
-If[EvenQ[nRow+1],
-totalBlocksInRowBelow=nelx-1;,
-totalBlocksInRowBelow=nelx;
-];
+totalBlocksInRowBelow=getTotalBlocksInRow[nRow+1];
 (*transfer base reactions of blocks in row nRow to the blocks in row nRow+1*)
 For[j=1,j<=totalBlocksInRowBelow,j++,
 updateStress[getBlockLoads[{nRow+1,j}],{nRow+1,j}];
@@ -187,10 +192,7 @@ transferContactActionsBelow[i];
 displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTR,i,j,totalBlocksInRow},
 blocks={}; stressAvg={};interfaces={};
 For[i=1,i<=nely,i++,
-If[EvenQ[i],
-totalBlocksInRow=nelx-1;,
-totalBlocksInRow=nelx;
-];
+totalBlocksInRow=getTotalBlocksInRow[i];
 For[j=1,j<=totalBlocksInRow,j++,
 If[!(isBlockOnLeftEdge[{i,j}]||isBlockOnRightEdge[{i,j}]),
 ptBL={(j -1)b-Mod[i,2]b/2,(nely-i)h};(*bottom left vertex's coordinates of the current block*)
