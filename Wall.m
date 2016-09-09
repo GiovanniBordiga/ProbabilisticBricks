@@ -142,23 +142,6 @@ result
 ];
 
 
-solveRow[nRow_]:=Module[{j,blockSequence,blockLoads,contact},
-blockSequence=findSolvableBlockSequence[nRow];
-For[j=1,j<=Length[blockSequence["seq"]],j++,
-Do[
-blockLoads=getBlockLoads[{nRow,k}];
-contact=contacts[[getBlockNum[{nRow,k}]]];
-blockLoads=solveBlock[blockLoads,contact,{nRow,k},blockSequence["dir"][[j]]];
-updateStress[blockLoads,{nRow,k}];,
-{k,blockSequence["seq"][[j]]}
-];
-];
-
-(*return the equilibrium check*)
-checkRowEquilibrium[nRow,blockSequence["cri"]]
-];
-
-
 updateStress[pBlock_,{nRow_,j_}]:=Module[{blockNum},
 blockNum=getBlockNum[{nRow,j}];
 \[Sigma]v[[blockNum]]=pBlock[[5;;16]];
@@ -197,6 +180,51 @@ unbalancedBlocksData["eq_check"]=rowEqCheck;
 unbalancedBlocksData["blocks"]=unbalancedBlocks;
 unbalancedBlocksData["loads"]=unbalancedBlockLoads;
 unbalancedBlocksData
+];
+
+
+startCorrectionWaves[nRow_,unbalancedBlocksData_]:=Module[{rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,newUnbalancedBlocks,newUnbalancedBlockLoads,nextBlocksData,j},
+unbalancedBlocks=unbalancedBlocksData["blocks"];
+unbalancedBlockLoads=unbalancedBlocksData["loads"];
+While[Length[unbalancedBlocks]!=0&&rowEqCheck,
+newUnbalancedBlocks={};
+newUnbalancedBlockLoads={};
+For[j=1,j<=Length[unbalancedBlocks],j++,
+nextBlocksData=correctUnbalancedBlocks[nRow,unbalancedBlocks[[j]],unbalancedBlockLoads[[j]]];
+rowEqCheck=nextBlocksData["eq_check"];
+If[Length[nextBlocksData["blocks"]]!=0,
+AppendTo[newUnbalancedBlocks,nextBlocksData["blocks"]];
+AppendTo[newUnbalancedBlockLoads,nextBlocksData["loads"]];
+];
+];
+unbalancedBlocks=newUnbalancedBlocks;
+unbalancedBlockLoads=newUnbalancedBlockLoads;
+];
+
+rowEqCheck
+];
+
+
+solveRow[nRow_]:=Module[{j,blockSequence,blockLoads,contact,unbalancedBlocksData,rowEqCheck},
+blockSequence=findSolvableBlockSequence[nRow];
+For[j=1,j<=Length[blockSequence["seq"]],j++,
+Do[
+blockLoads=getBlockLoads[{nRow,k}];
+contact=contacts[[getBlockNum[{nRow,k}]]];
+blockLoads=solveBlock[blockLoads,contact,{nRow,k},blockSequence["dir"][[j]]];
+updateStress[blockLoads,{nRow,k}];,
+{k,blockSequence["seq"][[j]]}
+];
+];
+
+(*equilibrium check*)
+unbalancedBlocksData=checkRowEquilibrium[nRow,blockSequence["cri"]];
+If[unbalancedBlocksData["eq_check"],
+rowEqCheck=True;,
+rowEqCheck=startCorrectionWaves[nRow,unbalancedBlocksData];
+];
+
+rowEqCheck
 ];
 
 
