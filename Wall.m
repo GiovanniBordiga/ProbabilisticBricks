@@ -167,7 +167,9 @@ blockNum=getBlockNum[{nRow,j}];
 ];
 
 
-checkRowEquilibrium[nRow_,criticalBlocksInRow_]:=Module[{rowEqCheck,firstBlockLoads,lastBlockLoads,leftBlockLoads,rightBlockLoads,contact},
+checkRowEquilibrium[nRow_,criticalBlocksInRow_]:=Module[{unbalancedBlocksData,rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,j,firstBlockLoads,lastBlockLoads,leftBlockLoads,rightBlockLoads,contact},
+unbalancedBlocks={};
+unbalancedBlockLoads={};
 (*check first and last block in the row*)
 firstBlockLoads=getBlockLoads[{nRow,1}];
 lastBlockLoads=getBlockLoads[{nRow,getTotalBlocksInRow[nRow]}];
@@ -184,9 +186,17 @@ contact=contacts[[getBlockNum[{nRow,criticalBlocksInRow[[j,2]]}]]];
 rightBlockLoads=solveBlock[rightBlockLoads,contact,{nRow,criticalBlocksInRow[[j,2]]},-1];
 (*check the interface*)
 rowEqCheck=leftBlockLoads[[17;;20]]==rightBlockLoads[[1;;4]];
+(*if the current pair is unbalanced save the block numbers and solutions*)
+If[!rowEqCheck,
+AppendTo[unbalancedBlocks,criticalBlocksInRow[[j]]];
+AppendTo[unbalancedBlockLoads,{leftBlockLoads,rightBlockLoads}];
+];
 ];
 
-rowEqCheck
+unbalancedBlocksData["eq_check"]=rowEqCheck;
+unbalancedBlocksData["blocks"]=unbalancedBlocks;
+unbalancedBlocksData["loads"]=unbalancedBlockLoads;
+unbalancedBlocksData
 ];
 
 
