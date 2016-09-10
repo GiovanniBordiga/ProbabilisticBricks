@@ -4,6 +4,7 @@ BeginPackage["ProbabilisticBricks`Block`"];
 
 
 solveBlock::usage="solveBlock[pBlock, contact] returns the vector of interface forces satisfying the equilibrium, the friction criterion and the unilaterality condition.";
+(*correctBlock::usage="correctBlock[pBlock,contact,{nRow,j}] .";*)
 
 
 Begin["`Private`"];
@@ -125,6 +126,13 @@ solveHalvedBlockR2L[pBlock,isBlockOnLeftEdge[{nRow,j}]]
 correctBlock[pBlock_,contact_,{nRow_,j_}]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Mc,Md,H,Rt},
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=pBlock;
 
+If[isBlockHalved[{nRow,j}],
+(*halved blocks*)
+If[isBlockOnLeftEdge[{nRow,j}],
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=solveHalvedBlockR2L[pBlock,True];,
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=solveHalvedBlockL2R[pBlock,False];
+];,
+(*normal blocks*)
 Rt=Vsu+Vsb+Ns+Nc+P+Nd-Vdu-Vdb;
 H=Lsu+Lsb+Ts+Tc+Td-Ldu-Ldb;
 Md=(Ns+Vsu+Vsb+Nc/2+P/2)b-h(Lsu-Ldu+Ts+Tc+Td);
@@ -154,6 +162,7 @@ Ldb=H-Vs-Vc-Vd;
 ];
 If[H-Vs-Vc-Vd<0,
 Lsb=-(H-Vs-Vc-Vd);
+];
 ];
 ];
 
