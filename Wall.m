@@ -183,7 +183,22 @@ unbalancedBlocksData
 ];
 
 
-correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{leftBlockLoads_,rightBlockLoads_},dir_]:=Module[{nextBlocksData,leftHasBaseContact,rightHasBaseContact,eqRot,rowEqCheck,nextBlocks,nextBlockLoads,nextDir},
+computeGlobalRot[leftBlockLoads_,rightBlockLoads_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,M1,M2},
+
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=leftBlockLoads;
+M1=-((Ns+Vsu+Vsb+Nc/2+P/2)b-h(Lsu+Ts+Tc+Td));
+
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=rightBlockLoads;
+M2=(Nc/2+P/2+Nd-Vdu-Vdb)b+h(-Ldu+Ts+Tc+Td);
+
+M1+M2
+];
+
+
+correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{leftBlockLoads_,rightBlockLoads_},dir_]:=Module[{nextBlocksData,leftHasBaseContact,rightHasBaseContact,rowEqCheck,nextBlocks,nextBlockLoads,nextDir,nextLeftLoads,nextRightLoads},
+
+rowEqCheck=True;nextBlocks={};nextBlockLoads={};nextDir=0;
+
 If[leftBlockLoads[[{11,13}]]!={0,0},
 leftHasBaseContact=True;,
 leftHasBaseContact=False;
@@ -199,38 +214,167 @@ If[dir==0,
 
 If[leftHasBaseContact&&rightHasBaseContact,
 (*both blocks have base contacts*)
-
+(*check which block has the bigger Lb*)
+If[leftBlockLoads[[19]]>rightBlockLoads[[3]],
+(*Ldb>Lsb*)
+rightBlockLoads[[1;;4]]=leftBlockLoads[[17;;20]];
+(*solve right block with corrected loads*)
+nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
+(*update stress*)
+updateStress[nextLeftLoads,{nRow,rightBlock}];
+(*check if the wave needs to continue*)
+If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
+(*right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock+1,rightBlock+1};
+nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=1;
+];,
+(*Ldb<Lsb*)
+leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
+(*TODO: solve left block with corrected loads*)
+nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
+(*update stress*)
+updateStress[nextRightLoads,{nRow,leftBlock}];
+(*check if the wave needs to continue*)
+If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
+(*left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock-1,rightBlock-1};
+nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=-1;
+];
+];
 ];
 
 If[leftHasBaseContact&&!rightHasBaseContact,
 (*only left block has base contacts*)
-
+leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
+(*solve left block with corrected loads*)
+nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
+(*update stress*)
+updateStress[nextRightLoads,{nRow,leftBlock}];
+(*check if the wave needs to continue*)
+If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
+(*left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock-1,rightBlock-1};
+nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=-1;
+];
+If[nextRightLoads[[17;;20]]!=leftBlockLoads[[17;;20]],
+(*right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock+1,rightBlock+1};
+nextLeftLoads=nextRightLoads;
+nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=1;
+];
 ];
 
 If[!leftHasBaseContact&&rightHasBaseContact,
 (*only right block has base contacts*)
-
+rightBlockLoads[[1;;4]]=leftBlockLoads[[17;;20]];
+(*solve right block with corrected loads*)
+nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
+(*update stress*)
+updateStress[nextLeftLoads,{nRow,rightBlock}];
+(*check if the wave needs to continue*)
+If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
+(*right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock+1,rightBlock+1};
+nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=1;
+];
+If[nextLeftLoads[[1;;4]]!=rightBlockLoads[[1;;4]],
+(*left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock-1,rightBlock-1};
+nextRightLoads=nextLeftLoads;
+nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=-1;
+];
 ];
 
 If[!leftHasBaseContact&&!rightHasBaseContact,
 (*Check which block really has base contacts*)
-eqRot=0(*TODO: compute 'global' equilibrium*)
-If[eqRot>0,
-(*TODO: correct towards the right*),
-(*TODO: correct towards the left*)
+If[computeGlobalRot[leftBlockLoads,rightBlockLoads]>0,
+rightBlockLoads[[1;;4]]=leftBlockLoads[[17;;20]];
+(*correct towards the right*)
+nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
+(*update stress*)
+updateStress[nextLeftLoads,{nRow,rightBlock}];
+(*check if the wave needs to continue*)
+If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
+(*right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock+1,rightBlock+1};
+nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=1;
+];
+If[nextLeftLoads[[1;;4]]!=rightBlockLoads[[1;;4]],
+(*left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock-1,rightBlock-1};
+nextRightLoads=nextLeftLoads;
+nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=-1;
+];,
+leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
+(*correct towards the left*)
+nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
+(*update stress*)
+updateStress[nextRightLoads,{nRow,leftBlock}];
+(*check if the wave needs to continue*)
+If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
+(*left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock-1,rightBlock-1};
+nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=-1;
+];
+If[nextRightLoads[[17;;20]]!=leftBlockLoads[[17;;20]],
+(*right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock+1,rightBlock+1};
+nextLeftLoads=nextRightLoads;
+nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=1;
+];
 ];
 ];
 ];
 
-(*correction waves continue*)
+(*correction wave continues*)
 If[dir>0,
 (*left solution is correct, proceed towards the right*)
-
+nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
+(*update stress*)
+updateStress[nextLeftLoads,{nRow,rightBlock}];
+(*check if the wave needs to continue*)
+If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
+(*right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock+1,rightBlock+1};
+nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=1;
+];
 ];
 
 If[dir<0,
-(*right solution is correct, proceed towards the right*)
-
+(*right solution is correct, proceed towards the left*)
+nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
+(*update stress*)
+updateStress[nextRightLoads,{nRow,leftBlock}];
+(*check if the wave needs to continue*)
+If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
+(*left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock-1,rightBlock-1};
+nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextBlockLoads={nextLeftLoads,nextRightLoads};
+nextDir=-1;
+];
 ];
 
 nextBlocksData["eq_check"]=rowEqCheck;
@@ -241,7 +385,7 @@ nextBlocksData
 ];
 
 
-startCorrectionWaves[nRow_,unbalancedBlocksData_]:=Module[{rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,newUnbalancedBlocks,newUnbalancedBlockLoads,directions,newDirections,nextBlocksData,j},
+startCorrectionWaves[nRow_,unbalancedBlocksData_]:=Module[{rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,newUnbalancedBlocks,newUnbalancedBlockLoads,directions,newDirections,nextBlocksData,j,leftLoads,rightLoads},
 unbalancedBlocks=unbalancedBlocksData["blocks"];
 unbalancedBlockLoads=unbalancedBlocksData["loads"];
 directions=Table[0,{Length[unbalancedBlocks]}];
@@ -258,6 +402,23 @@ AppendTo[newUnbalancedBlockLoads,nextBlocksData["loads"]];
 AppendTo[newDirections,nextBlocksData["dir"]];
 ];
 ];
+
+(*check for wave collisions*)
+j=1;
+While[j<=Length[newUnbalancedBlocks],
+If[newUnbalancedBlocks[[j-1]]==newUnbalancedBlocks[[j]],
+leftLoads=newUnbalancedBlockLoads[[j-1,1]];
+rightLoads=newUnbalancedBlockLoads[[j,2]];
+newUnbalancedBlocks=Drop[newUnbalancedBlocks,{j}];
+newUnbalancedBlockLoads=Drop[newUnbalancedBlockLoads,{j}];
+newUnbalancedBlockLoads[[j-1]]={leftLoads,rightLoads};
+newDirections=Drop[newDirections,{j}];
+newDirections[[j-1]]=0;
+j--;
+];
+j++;
+];
+
 unbalancedBlocks=newUnbalancedBlocks;
 unbalancedBlockLoads=newUnbalancedBlockLoads;
 directions=newDirections;
