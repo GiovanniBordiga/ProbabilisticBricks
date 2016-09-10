@@ -183,22 +183,84 @@ unbalancedBlocksData
 ];
 
 
-startCorrectionWaves[nRow_,unbalancedBlocksData_]:=Module[{rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,newUnbalancedBlocks,newUnbalancedBlockLoads,nextBlocksData,j},
+correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{leftBlockLoads_,rightBlockLoads_},dir_]:=Module[{nextBlocksData,leftHasBaseContact,rightHasBaseContact,eqRot,rowEqCheck,nextBlocks,nextBlockLoads,nextDir},
+If[leftBlockLoads[[{11,13}]]!={0,0},
+leftHasBaseContact=True;,
+leftHasBaseContact=False;
+];
+If[rightBlockLoads[[{13,15}]]!={0,0},
+rightHasBaseContact=True;,
+rightHasBaseContact=False;
+];
+(*TODO: add checks to detect collisions of waves*)
+
+(*first correction*)
+If[dir==0,
+
+If[leftHasBaseContact&&rightHasBaseContact,
+(*both blocks have base contacts*)
+
+];
+
+If[leftHasBaseContact&&!rightHasBaseContact,
+(*only left block has base contacts*)
+
+];
+
+If[!leftHasBaseContact&&rightHasBaseContact,
+(*only right block has base contacts*)
+
+];
+
+If[!leftHasBaseContact&&!rightHasBaseContact,
+(*Check which block really has base contacts*)
+eqRot=0(*TODO: compute 'global' equilibrium*)
+If[eqRot>0,
+(*TODO: correct towards the right*),
+(*TODO: correct towards the left*)
+];
+];
+];
+
+(*correction waves continue*)
+If[dir>0,
+(*left solution is correct, proceed towards the right*)
+
+];
+
+If[dir<0,
+(*right solution is correct, proceed towards the right*)
+
+];
+
+nextBlocksData["eq_check"]=rowEqCheck;
+nextBlocksData["blocks"]=nextBlocks;
+nextBlocksData["loads"]=nextBlockLoads;
+nextBlocksData["dir"]=nextDir;
+nextBlocksData
+];
+
+
+startCorrectionWaves[nRow_,unbalancedBlocksData_]:=Module[{rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,newUnbalancedBlocks,newUnbalancedBlockLoads,directions,newDirections,nextBlocksData,j},
 unbalancedBlocks=unbalancedBlocksData["blocks"];
 unbalancedBlockLoads=unbalancedBlocksData["loads"];
+directions=Table[0,{Length[unbalancedBlocks]}];
 While[Length[unbalancedBlocks]!=0&&rowEqCheck,
 newUnbalancedBlocks={};
 newUnbalancedBlockLoads={};
+newDirections={};
 For[j=1,j<=Length[unbalancedBlocks],j++,
-nextBlocksData=correctUnbalancedBlocks[nRow,unbalancedBlocks[[j]],unbalancedBlockLoads[[j]]];
+nextBlocksData=correctUnbalancedBlocks[nRow,unbalancedBlocks[[j]],unbalancedBlockLoads[[j]],directions[[j]]];
 rowEqCheck=nextBlocksData["eq_check"];
 If[Length[nextBlocksData["blocks"]]!=0,
 AppendTo[newUnbalancedBlocks,nextBlocksData["blocks"]];
 AppendTo[newUnbalancedBlockLoads,nextBlocksData["loads"]];
+AppendTo[newDirections,nextBlocksData["dir"]];
 ];
 ];
 unbalancedBlocks=newUnbalancedBlocks;
 unbalancedBlockLoads=newUnbalancedBlockLoads;
+directions=newDirections;
 ];
 
 rowEqCheck
