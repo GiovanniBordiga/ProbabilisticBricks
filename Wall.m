@@ -336,7 +336,7 @@ AppendTo[newDirections,nextBlocksData["dir"]];
 ];
 
 (*check for wave collisions*)
-j=1;
+j=2;
 While[j<=Length[newUnbalancedBlocks],
 If[newUnbalancedBlocks[[j-1]]==newUnbalancedBlocks[[j]],
 leftLoads=newUnbalancedBlockLoads[[j-1,1]];
