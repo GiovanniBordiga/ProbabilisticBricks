@@ -195,29 +195,11 @@ M1+M2
 ];
 
 
-correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{$leftBlockLoads_,$rightBlockLoads_},dir_]:=Module[{leftBlockLoads,rightBlockLoads,nextBlocksData,leftHasBaseContact,rightHasBaseContact,rowEqCheck,nextBlocks,nextBlockLoads,nextDir,nextLeftLoads,nextRightLoads},
+correctAndBuildNextBlocksData[blockToCorrect_,nRow_,{leftBlock_,rightBlock_},{$leftBlockLoads_,$rightBlockLoads_}]:=Module[{leftBlockLoads,rightBlockLoads,nextBlocksData,rowEqCheck,nextBlocks,nextBlockLoads,nextDir,nextLeftLoads,nextRightLoads},
 leftBlockLoads=$leftBlockLoads;rightBlockLoads=$rightBlockLoads;
 rowEqCheck=True;nextBlocks={};nextBlockLoads={};nextDir=0;
 
-If[leftBlockLoads[[{11,13}]]!={0,0},
-leftHasBaseContact=True;,
-leftHasBaseContact=False;
-];
-If[rightBlockLoads[[{13,15}]]!={0,0},
-rightHasBaseContact=True;,
-rightHasBaseContact=False;
-];
-
-(*TODO: add checks to detect edge blocks and return the appropriate rowEqCheck*)
-
-(*first correction*)
-If[dir==0,
-
-If[leftHasBaseContact&&rightHasBaseContact,
-(*both blocks have base contacts*)
-(*check which block has the bigger Lb*)
-If[leftBlockLoads[[19]]>rightBlockLoads[[3]],
-(*Ldb>Lsb*)
+If[blockToCorrect==rightBlock,
 rightBlockLoads[[1;;4]]=leftBlockLoads[[17;;20]];
 (*solve right block with corrected loads*)
 nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
@@ -230,26 +212,16 @@ nextBlocks={leftBlock+1,rightBlock+1};
 nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
 nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=1;
-];,
-(*Ldb<Lsb*)
-leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
-(*TODO: solve left block with corrected loads*)
-nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
-(*update stress*)
-updateStress[nextRightLoads,{nRow,leftBlock}];
-(*check if the wave needs to continue*)
-If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
+];
+If[nextLeftLoads[[1;;4]]!=rightBlockLoads[[1;;4]],
 (*left interface has changed, wave continues towards the left*)
 nextBlocks={leftBlock-1,rightBlock-1};
+nextRightLoads=nextLeftLoads;
 nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
 nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=-1;
 ];
-];
-];
-
-If[leftHasBaseContact&&!rightHasBaseContact,
-(*only left block has base contacts*)
+,
 leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
 (*solve left block with corrected loads*)
 nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
@@ -273,76 +245,58 @@ nextDir=1;
 ];
 ];
 
+nextBlocksData["eq_check"]=rowEqCheck;
+nextBlocksData["blocks"]=nextBlocks;
+nextBlocksData["loads"]=nextBlockLoads;
+nextBlocksData["dir"]=nextDir;
+nextBlocksData
+];
+
+
+correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{leftBlockLoads_,rightBlockLoads_},dir_]:=Module[{nextBlocksData,leftHasBaseContact,rightHasBaseContact},
+
+If[leftBlockLoads[[{11,13}]]!={0,0},
+leftHasBaseContact=True;,
+leftHasBaseContact=False;
+];
+If[rightBlockLoads[[{13,15}]]!={0,0},
+rightHasBaseContact=True;,
+rightHasBaseContact=False;
+];
+
+(*TODO: add checks to detect edge blocks and return the appropriate rowEqCheck*)
+
+(*first correction*)
+If[dir==0,
+
+If[leftHasBaseContact&&rightHasBaseContact,
+(*both blocks have base contacts*)
+(*check which block has the bigger Lb*)
+If[leftBlockLoads[[19]]>rightBlockLoads[[3]],
+(*Ldb>Lsb*)
+nextBlocksData=correctAndBuildNextBlocksData[rightBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];,
+(*Ldb<Lsb*)
+nextBlocksData=correctAndBuildNextBlocksData[leftBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];
+];
+];
+
+If[leftHasBaseContact&&!rightHasBaseContact,
+(*only left block has base contacts*)
+nextBlocksData=correctAndBuildNextBlocksData[leftBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];
+];
+
 If[!leftHasBaseContact&&rightHasBaseContact,
 (*only right block has base contacts*)
-rightBlockLoads[[1;;4]]=leftBlockLoads[[17;;20]];
-(*solve right block with corrected loads*)
-nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
-(*update stress*)
-updateStress[nextLeftLoads,{nRow,rightBlock}];
-(*check if the wave needs to continue*)
-If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
-(*right interface has changed, wave continues towards the right*)
-nextBlocks={leftBlock+1,rightBlock+1};
-nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=1;
-];
-If[nextLeftLoads[[1;;4]]!=rightBlockLoads[[1;;4]],
-(*left interface has changed, wave continues towards the left*)
-nextBlocks={leftBlock-1,rightBlock-1};
-nextRightLoads=nextLeftLoads;
-nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=-1;
-];
+nextBlocksData=correctAndBuildNextBlocksData[rightBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];
 ];
 
 If[!leftHasBaseContact&&!rightHasBaseContact,
 (*Check which block really has base contacts*)
 If[computeGlobalRot[leftBlockLoads,rightBlockLoads]>0,
-rightBlockLoads[[1;;4]]=leftBlockLoads[[17;;20]];
 (*correct towards the right*)
-nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
-(*update stress*)
-updateStress[nextLeftLoads,{nRow,rightBlock}];
-(*check if the wave needs to continue*)
-If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
-(*right interface has changed, wave continues towards the right*)
-nextBlocks={leftBlock+1,rightBlock+1};
-nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=1;
-];
-If[nextLeftLoads[[1;;4]]!=rightBlockLoads[[1;;4]],
-(*left interface has changed, wave continues towards the left*)
-nextBlocks={leftBlock-1,rightBlock-1};
-nextRightLoads=nextLeftLoads;
-nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=-1;
-];,
-leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
+nextBlocksData=correctAndBuildNextBlocksData[rightBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];,
 (*correct towards the left*)
-nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
-(*update stress*)
-updateStress[nextRightLoads,{nRow,leftBlock}];
-(*check if the wave needs to continue*)
-If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
-(*left interface has changed, wave continues towards the left*)
-nextBlocks={leftBlock-1,rightBlock-1};
-nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=-1;
-];
-If[nextRightLoads[[17;;20]]!=leftBlockLoads[[17;;20]],
-(*right interface has changed, wave continues towards the right*)
-nextBlocks={leftBlock+1,rightBlock+1};
-nextLeftLoads=nextRightLoads;
-nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=1;
-];
+nextBlocksData=correctAndBuildNextBlocksData[leftBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];
 ];
 ];
 ];
@@ -350,38 +304,14 @@ nextDir=1;
 (*correction wave continues*)
 If[dir>0,
 (*left solution is correct, proceed towards the right*)
-nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBlock}]]],{nRow,rightBlock}];
-(*update stress*)
-updateStress[nextLeftLoads,{nRow,rightBlock}];
-(*check if the wave needs to continue*)
-If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
-(*right interface has changed, wave continues towards the right*)
-nextBlocks={leftBlock+1,rightBlock+1};
-nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=1;
-];
+nextBlocksData=correctAndBuildNextBlocksData[rightBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];
 ];
 
 If[dir<0,
 (*right solution is correct, proceed towards the left*)
-nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock}]]],{nRow,leftBlock}];
-(*update stress*)
-updateStress[nextRightLoads,{nRow,leftBlock}];
-(*check if the wave needs to continue*)
-If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
-(*left interface has changed, wave continues towards the left*)
-nextBlocks={leftBlock-1,rightBlock-1};
-nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
-nextBlockLoads={nextLeftLoads,nextRightLoads};
-nextDir=-1;
-];
+nextBlocksData=correctAndBuildNextBlocksData[leftBlock,nRow,{leftBlock,rightBlock},{leftBlockLoads,rightBlockLoads}];
 ];
 
-nextBlocksData["eq_check"]=rowEqCheck;
-nextBlocksData["blocks"]=nextBlocks;
-nextBlocksData["loads"]=nextBlockLoads;
-nextBlocksData["dir"]=nextDir;
 nextBlocksData
 ];
 
