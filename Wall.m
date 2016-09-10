@@ -207,7 +207,8 @@ If[rightBlockLoads[[{13,15}]]!={0,0},
 rightHasBaseContact=True;,
 rightHasBaseContact=False;
 ];
-(*TODO: add checks to detect collisions of waves*)
+
+(*TODO: add checks to detect edge blocks and return the appropriate rowEqCheck*)
 
 (*first correction*)
 If[dir==0,
