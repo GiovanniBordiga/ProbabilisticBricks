@@ -195,8 +195,8 @@ M1+M2
 ];
 
 
-correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{leftBlockLoads_,rightBlockLoads_},dir_]:=Module[{nextBlocksData,leftHasBaseContact,rightHasBaseContact,rowEqCheck,nextBlocks,nextBlockLoads,nextDir,nextLeftLoads,nextRightLoads},
-
+correctUnbalancedBlocks[nRow_,{leftBlock_,rightBlock_},{$leftBlockLoads_,$rightBlockLoads_},dir_]:=Module[{leftBlockLoads,rightBlockLoads,nextBlocksData,leftHasBaseContact,rightHasBaseContact,rowEqCheck,nextBlocks,nextBlockLoads,nextDir,nextLeftLoads,nextRightLoads},
+leftBlockLoads=$leftBlockLoads;rightBlockLoads=$rightBlockLoads;
 rowEqCheck=True;nextBlocks={};nextBlockLoads={};nextDir=0;
 
 If[leftBlockLoads[[{11,13}]]!={0,0},
@@ -387,6 +387,7 @@ nextBlocksData
 
 
 startCorrectionWaves[nRow_,unbalancedBlocksData_]:=Module[{rowEqCheck,unbalancedBlocks,unbalancedBlockLoads,newUnbalancedBlocks,newUnbalancedBlockLoads,directions,newDirections,nextBlocksData,j,leftLoads,rightLoads},
+rowEqCheck=True;
 unbalancedBlocks=unbalancedBlocksData["blocks"];
 unbalancedBlockLoads=unbalancedBlocksData["loads"];
 directions=Table[0,{Length[unbalancedBlocks]}];
