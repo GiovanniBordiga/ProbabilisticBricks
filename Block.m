@@ -122,6 +122,45 @@ solveHalvedBlockR2L[pBlock,isBlockOnLeftEdge[{nRow,j}]]
 ];
 
 
+correctBlock[pBlock_,contact_,{nRow_,j_}]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Mc,Md,H,Rt},
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=pBlock;
+
+Rt=Vsu+Vsb+Ns+Nc+P+Nd-Vdu-Vdb;
+H=Lsu+Lsb+Ts+Tc+Td-Ldu-Ldb;
+Md=(Ns+Vsu+Vsb+Nc/2+P/2)b-h(Lsu-Ldu+Ts+Tc+Td);
+Mc=(Ns+Vsu+Vsb-Nd+Vdu+Vdb)b/2-h(Lsu-Ldu+Ts+Tc+Td);
+
+If[Abs[Mc/Rt]>b/2,
+(*no base mechanism is possible, solve L2R or R2L*)
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=solveBlock[pBlock,contact,{nRow,j},-Sign[Mc/Rt]];
+,
+(*base mechanism is possible*)
+If[contact==1,
+(*meccanismo 1*)
+Rc=0;
+Rs=Md/b;
+Rd=Rt-Rs;,
+(*meccanismo 2 e 3*)
+Rs=Max[Mc/(b/2),0];
+Rd=Max[-Mc/(b/2),0];
+Rc=Rt-Rs-Rd;
+];
+Vs=V[H,Rt,\[Mu],Rs];
+Vd=V[H,Rt,\[Mu],Rd];
+Vc=V[H,Rt,\[Mu],Rc];
+(*check if the friction criterion is satified*)
+If[H-Vs-Vc-Vd>0,
+Ldb=H-Vs-Vc-Vd;
+];
+If[H-Vs-Vc-Vd<0,
+Lsb=-(H-Vs-Vc-Vd);
+];
+];
+
+{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+];
+
+
 End[];
 
 
