@@ -444,7 +444,9 @@ updateStress[blockLoads,{nRow,k}];,
 (*equilibrium check*)
 unbalancedBlocksData=checkRowEquilibrium[nRow,blockSequence["cri"]];
 If[unbalancedBlocksData["eq_check"],
+(*row is already balanced*)
 rowEqCheck=True;,
+(*start correcting unbalanced blocks*)
 rowEqCheck=startCorrectionWaves[nRow,unbalancedBlocksData];
 ];
 
