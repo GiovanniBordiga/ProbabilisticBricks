@@ -340,7 +340,6 @@ AppendTo[newUnbalancedBlockLoads,nextBlocksData["loads"]];
 AppendTo[newDirections,nextBlocksData["dir"]];
 ];
 ];
-
 (*check for wave collisions*)
 j=2;
 While[j<=Length[newUnbalancedBlocks],
@@ -377,14 +376,13 @@ updateStress[blockLoads,{nRow,k}];,
 {k,blockSequence["seq"][[j]]}
 ];
 ];
-
 (*equilibrium checks*)
 unbalancedBlocksData=checkRowEquilibrium[nRow,blockSequence["cri"]];
-If[unbalancedBlocksData["eq_check"]&&Length[unbalancedBlocksData["blocks"]]==0,
-(*row is already balanced*)
-rowEqCheck=True;,
+If[unbalancedBlocksData["eq_check"]&&Length[unbalancedBlocksData["blocks"]]!=0,
 (*start correcting unbalanced blocks*)
-rowEqCheck=startCorrectionWaves[nRow,unbalancedBlocksData];
+rowEqCheck=startCorrectionWaves[nRow,unbalancedBlocksData];,
+(*no block needs correction*)
+rowEqCheck=unbalancedBlocksData["eq_check"];
 ];
 
 rowEqCheck
