@@ -210,10 +210,10 @@ nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=1;
 ];
 If[nextLeftLoads[[1;;4]]!=rightBlockLoads[[1;;4]],
-(*left interface has changed, wave continues towards the left*)
-nextBlocks={leftBlock-1,rightBlock-1};
+(*change direction: left interface has changed, wave continues towards the left*)
+nextBlocks={leftBlock,rightBlock};
 nextRightLoads=nextLeftLoads;
-nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
+nextLeftLoads=getBlockLoads[{nRow,leftBlock}];
 nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=-1;
 ];
@@ -237,10 +237,10 @@ nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=-1;
 ];
 If[nextRightLoads[[17;;20]]!=leftBlockLoads[[17;;20]],
-(*right interface has changed, wave continues towards the right*)
-nextBlocks={leftBlock+1,rightBlock+1};
+(*change direction: right interface has changed, wave continues towards the right*)
+nextBlocks={leftBlock,rightBlock};
 nextLeftLoads=nextRightLoads;
-nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
+nextRightLoads=getBlockLoads[{nRow,rightBlock}];
 nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=1;
 ];
