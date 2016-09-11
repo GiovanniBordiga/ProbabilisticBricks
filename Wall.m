@@ -57,12 +57,6 @@ pvnew=\[Sigma]v[[nBlock]];,
 If[EvenQ[nRow],
 blockULPos={nRow-1,j};blockURPos={nRow-1,j+1};,
 blockULPos={nRow-1,j-1};blockURPos={nRow-1,j};
-(*If[isBlockOnLeftEdge[{nRow,j}],
-blockULPos={0,0};
-];
-If[isBlockOnRightEdge[{nRow,j}],
-blockURPos={0,0};
-];*)
 ];
 nBlockUL=getBlockNum[blockULPos];
 nBlockUR=getBlockNum[blockURPos];
@@ -105,7 +99,7 @@ Nd=0;Td=0;Ncd=0;Tcd=0;
 ];
 ];
 ];
-pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};
+pvnew=Join[{Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td},\[Sigma]v[[nBlock,7;;12]]];
 ];
 
 Join[\[Sigma]h[[nBlock+nRow-1]],pvnew,\[Sigma]h[[nBlock+nRow]]]
