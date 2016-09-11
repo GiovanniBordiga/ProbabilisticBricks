@@ -337,6 +337,7 @@ AppendTo[newDirections,nextBlocksData["dir"]];
 (*check for wave collisions*)
 j=2;
 While[j<=Length[newUnbalancedBlocks],
+(*check for non-staggared wave collision*)
 If[newUnbalancedBlocks[[j-1]]==newUnbalancedBlocks[[j]],
 leftLoads=newUnbalancedBlockLoads[[j-1,1]];
 rightLoads=newUnbalancedBlockLoads[[j,2]];
@@ -345,7 +346,19 @@ newUnbalancedBlockLoads=Drop[newUnbalancedBlockLoads,{j}];
 newUnbalancedBlockLoads[[j-1]]={leftLoads,rightLoads};
 newDirections=Drop[newDirections,{j}];
 newDirections[[j-1]]=0;
+j--;,
+(*check for staggared wave collision*)
+If[newUnbalancedBlocks[[j-1,2]]==newUnbalancedBlocks[[j,1]],
+leftLoads=newUnbalancedBlockLoads[[j-1,1]];
+rightLoads=newUnbalancedBlockLoads[[j-1,2]];
+rightLoads[[17;;20]]=newUnbalancedBlockLoads[[j,2,1;;4]];
+newUnbalancedBlocks=Drop[newUnbalancedBlocks,{j}];
+newUnbalancedBlockLoads=Drop[newUnbalancedBlockLoads,{j}];
+newUnbalancedBlockLoads[[j-1]]={leftLoads,rightLoads};
+newDirections=Drop[newDirections,{j}];
+newDirections[[j-1]]=1;
 j--;
+];
 ];
 j++;
 ];
