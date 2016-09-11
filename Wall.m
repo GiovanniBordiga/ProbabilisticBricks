@@ -108,7 +108,7 @@ Nd=0;Td=0;Ncd=0;Tcd=0;
 pvnew={Ns,Ts,Ncs+Ncd,Tcs+Tcd,Nd,Td,0,0,0,0,0,0};
 ];
 
-Join[\[Sigma]h[[nBlock]],pvnew,\[Sigma]h[[nBlock+1]]]
+Join[\[Sigma]h[[nBlock+nRow-1]],pvnew,\[Sigma]h[[nBlock+nRow]]]
 ];
 
 
