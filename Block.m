@@ -4,7 +4,7 @@ BeginPackage["ProbabilisticBricks`Block`"];
 
 
 solveBlock::usage="solveBlock[pBlock, contact] returns the vector of interface forces satisfying the equilibrium, the friction criterion and the unilaterality condition.";
-(*correctBlock::usage="correctBlock[pBlock,contact,{nRow,j}] .";*)
+correctBlock::usage="correctBlock[pBlock,contact,{nRow,j}] solve the block equilibrium assuming the forces on both vertical interfaces are known.";
 
 
 Begin["`Private`"];
