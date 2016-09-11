@@ -158,10 +158,10 @@ Vd=V[H,Rt,\[Mu],Rd];
 Vc=V[H,Rt,\[Mu],Rc];
 (*check if the friction criterion is satified*)
 If[H-Vs-Vc-Vd>0,
-Ldb=H-Vs-Vc-Vd;
+Ldb=H+Ldb-Vs-Vc-Vd;
 ];
 If[H-Vs-Vc-Vd<0,
-Lsb=-(H-Vs-Vc-Vd);
+Lsb=-(H-Lsb-Vs-Vc-Vd);
 ];
 ];
 ];
