@@ -206,6 +206,10 @@ nextLeftLoads=correctBlock[rightBlockLoads,contacts[[getBlockNum[{nRow,rightBloc
 (*update stress*)
 updateStress[nextLeftLoads,{nRow,rightBlock}];
 (*check if the wave needs to continue*)
+If[isBlockOnRightEdge[{nRow,rightBlock}],
+(*check equilibrium of the last block in the row*)
+rowEqCheck=nextLeftLoads[[17;;20]]=={0,0,0,0};,
+(*check if adiacent blocks will need to be corrected*)
 If[nextLeftLoads[[17;;20]]!=rightBlockLoads[[17;;20]],
 (*right interface has changed, wave continues towards the right*)
 nextBlocks={leftBlock+1,rightBlock+1};
@@ -221,6 +225,7 @@ nextLeftLoads=getBlockLoads[{nRow,leftBlock-1}];
 nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=-1;
 ];
+];
 ,
 leftBlockLoads[[17;;20]]=rightBlockLoads[[1;;4]];
 (*solve left block with corrected loads*)
@@ -228,6 +233,10 @@ nextRightLoads=correctBlock[leftBlockLoads,contacts[[getBlockNum[{nRow,leftBlock
 (*update stress*)
 updateStress[nextRightLoads,{nRow,leftBlock}];
 (*check if the wave needs to continue*)
+If[isBlockOnLeftEdge[{nRow,leftBlock}],
+(*check equilibrium of the first block in the row*)
+rowEqCheck=nextRightLoads[[1;;4]]=={0,0,0,0};,
+(*check if adiacent blocks will need to be corrected*)
 If[nextRightLoads[[1;;4]]!=leftBlockLoads[[1;;4]],
 (*left interface has changed, wave continues towards the left*)
 nextBlocks={leftBlock-1,rightBlock-1};
@@ -242,6 +251,7 @@ nextLeftLoads=nextRightLoads;
 nextRightLoads=getBlockLoads[{nRow,rightBlock+1}];
 nextBlockLoads={nextLeftLoads,nextRightLoads};
 nextDir=1;
+];
 ];
 ];
 
@@ -263,8 +273,6 @@ If[rightBlockLoads[[{13,15}]]!={0,0},
 rightHasBaseContact=True;,
 rightHasBaseContact=False;
 ];
-
-(*TODO: add checks to detect edge blocks and return the appropriate rowEqCheck*)
 
 (*first correction*)
 If[dir==0,
