@@ -168,7 +168,7 @@ rightBlockLoads=getBlockLoads[{nRow,criticalBlocksInRow[[j,2]]}];
 contact=contacts[[getBlockNum[{nRow,criticalBlocksInRow[[j,2]]}]]];
 rightBlockLoads=solveBlock[rightBlockLoads,contact,{nRow,criticalBlocksInRow[[j,2]]},-1];
 (*check the interface, if the current pair is unbalanced save the block numbers and solutions*)
-If[!(leftBlockLoads[[17;;20]]==rightBlockLoads[[1;;4]]);,
+If[!(leftBlockLoads[[17;;20]]==rightBlockLoads[[1;;4]]),
 AppendTo[unbalancedBlocks,criticalBlocksInRow[[j]]];
 AppendTo[unbalancedBlockLoads,{leftBlockLoads,rightBlockLoads}];
 ];
