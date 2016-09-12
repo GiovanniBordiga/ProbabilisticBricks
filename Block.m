@@ -90,9 +90,16 @@ Rs=Piecewise[{{Max[Rt-Rc-Rd,0],Md>=0},{0,Md<0}}];
 
 Ldu=Max[-Md/h,0];
 Vs=V[H,Rt,\[Mu],Rs];
+Ldu=Max[-Md/h,0];
+Vs=V[H,Rt,\[Mu],Rs];
+If[isOnLeftEdge,
 Vc=V[H,Rt,\[Mu],Rc];
 Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];
+Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];,
+Vd=0;
+Vc=Piecewise[{{V[H,Rt,\[Mu],Rc],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}];
+Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vc,Md<0}}];
+];
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
 ];
