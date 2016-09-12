@@ -16,10 +16,6 @@ Needs["ProbabilisticBricks`Wall`"];
 
 
 initStressVectors[$nelx_,$nely_]:=Module[{},
-If[EvenQ[$nely],
-totalBlocks=getBlockNum[{$nely,$nelx-1}];,
-totalBlocks=getBlockNum[{$nely,$nelx}];
-];
 \[Sigma]v=Table[{0,0,0,0,0,0,0,0,0,0,0,0},{totalBlocks}];
 \[Sigma]h=Table[{0,0,0,0},{totalBlocks+$nely}];
 ];
@@ -29,7 +25,11 @@ setProblemProperties[$nelx_,$nely_,$b_,$h_,$P_,$\[Mu]_]:=Module[{},
 nelx=$nelx;nely=$nely;
 b=$b;h=$h;
 P=$P;\[Mu]=$\[Mu];
-initStressVectors[nelx,nely];
+(*compute number of total blocks*)
+If[EvenQ[$nely],
+totalBlocks=getBlockNum[{$nely,$nelx-1}];,
+totalBlocks=getBlockNum[{$nely,$nelx}];
+];
 ];
 
 
@@ -39,6 +39,7 @@ contacts=RandomInteger[{1,3},totalBlocks]
 
 
 setBoundaryConditions[$loads_]:=Module[{},
+initStressVectors[nelx,nely];
 loads=$loads;
 ];
 
@@ -55,11 +56,6 @@ applyLoads[];
 eqCheck=solveWall[];
 displayWall[]
 ];
-
-
-(*Properties initialization*)
-nelx=80;nely=50;b=2;h=1;P=0.1;\[Mu]=0.8;
-initStressVectors[nelx,nely];
 
 
 End[];
