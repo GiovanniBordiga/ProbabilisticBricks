@@ -428,11 +428,11 @@ vLoad=Total[\[Sigma]v[[j,{1,3,5}]]]/maxLoad b;
 x=b/2+(2j-3)b/2;
 If[hLoad!=0,
 hArrow=Arrow[{{x-hLoad/2,(nely+0.15)h},{x+hLoad/2,(nely+0.15)h}}];
-AppendTo[arrows,{Arrowheads[0.02],hArrow}];
+AppendTo[arrows,{Arrowheads[0.25/nelx],hArrow}];
 ];
 If[vLoad!=0,
 vArrow=Arrow[{{x,(nely+0.15)h+vLoad},{x,(nely+0.15)h}}];
-AppendTo[arrows,{Arrowheads[0.02],vArrow}];
+AppendTo[arrows,{Arrowheads[0.25/nelx],vArrow}];
 ];
 ];
 
