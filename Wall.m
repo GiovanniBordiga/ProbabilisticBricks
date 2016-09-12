@@ -418,21 +418,21 @@ eqCheck
 ];
 
 
-displayLoads[]:=Module[{arrows,topLoads,x,hArrow,vArrow,hLoad,vLoad,maxHLoad},
+displayLoads[]:=Module[{arrows,topLoads,x,hArrow,vArrow,hLoad,vLoad,maxLoad},
 arrows={};
-maxHLoad=Max[Total[\[Sigma]v[[1;;nelx,{2,4,6}]],{2}]];
+maxLoad=Max[Max[Total[\[Sigma]v[[1;;nelx,{2,4,6}]],{2}]],Max[Total[\[Sigma]v[[1;;nelx,{1,3,5}]],{2}]]];
 For[j=1,j<=nelx,j++,
 (*compute vertical and horizontal resultants acting on top of the current block*)
-hLoad=Total[\[Sigma]v[[j,{2,4,6}]]]/maxHLoad b;
-vLoad=Total[\[Sigma]v[[j,{1,3,5}]]]/maxHLoad b;
+hLoad=Total[\[Sigma]v[[j,{2,4,6}]]]/maxLoad b;
+vLoad=Total[\[Sigma]v[[j,{1,3,5}]]]/maxLoad b;
 x=b/2+(2j-3)b/2;
 If[hLoad!=0,
 hArrow=Arrow[{{x-hLoad/2,(nely+0.15)h},{x+hLoad/2,(nely+0.15)h}}];
-AppendTo[arrows,{Arrowheads[0.005b],hArrow}];
+AppendTo[arrows,{Arrowheads[0.02],hArrow}];
 ];
 If[vLoad!=0,
 vArrow=Arrow[{{x,(nely+0.15)h+vLoad},{x,(nely+0.15)h}}];
-AppendTo[arrows,{Arrowheads[0.005b],vArrow}];
+AppendTo[arrows,{Arrowheads[0.02],vArrow}];
 ];
 ];
 
