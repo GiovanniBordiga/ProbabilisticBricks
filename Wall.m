@@ -405,16 +405,16 @@ updateStress[getBlockLoads[{nRow+1,j}],{nRow+1,j}];
 ];
 
 
-solveWall[]:=Module[{i},
-eqCheck=True;
-For[i=1,i<=nely&&eqCheck,i++,
-eqCheck=solveRow[i];
+solveWall[]:=Module[{i,rowEqCheck},
+rowEqCheck=True;
+For[i=1,i<=nely&&rowEqCheck,i++,
+rowEqCheck=solveRow[i];
 If[i!=nely,
 transferContactActionsBelow[i];
 ];
 ];
 
-eqCheck
+rowEqCheck
 ];
 
 
