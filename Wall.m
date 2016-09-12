@@ -418,6 +418,28 @@ eqCheck
 ];
 
 
+displayLoads[]:=Module[{arrows,topLoads,x,hArrow,vArrow,hLoad,vLoad,maxHLoad},
+arrows={};
+maxHLoad=Max[Total[\[Sigma]v[[1;;nelx,{2,4,6}]],{2}]];
+For[j=1,j<=nelx,j++,
+(*compute vertical and horizontal resultants acting on top of the current block*)
+hLoad=Total[\[Sigma]v[[j,{2,4,6}]]]/maxHLoad b;
+vLoad=Total[\[Sigma]v[[j,{1,3,5}]]]/maxHLoad b;
+x=b/2+(2j-3)b/2;
+If[hLoad!=0,
+hArrow=Arrow[{{x-hLoad/2,(nely+0.15)h},{x+hLoad/2,(nely+0.15)h}}];
+AppendTo[arrows,{Arrowheads[0.005b],hArrow}];
+];
+If[vLoad!=0,
+vArrow=Arrow[{{x,(nely+0.15)h+vLoad},{x,(nely+0.15)h}}];
+AppendTo[arrows,{Arrowheads[0.005b],vArrow}];
+];
+];
+
+Graphics[arrows]
+];
+
+
 displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTR,i,j,totalBlocksInRow},
 blocks={}; stressAvg={};interfaces={};
 For[i=1,i<=nely,i++,
@@ -450,7 +472,8 @@ AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBL,ptBR}]}];(*friction 
 ];
 blocks[[;;,2]]=GrayLevel/@(stressAvg/Max[stressAvg]);(*assign GrayLevel based on strees*)
 
-Show[Graphics[blocks],Graphics[interfaces]]];
+Show[Graphics[blocks],Graphics[interfaces],displayLoads[]]
+];
 
 
 End[];
