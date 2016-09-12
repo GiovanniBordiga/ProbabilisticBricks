@@ -413,6 +413,8 @@ If[i!=nely,
 transferContactActionsBelow[i];
 ];
 ];
+
+eqCheck
 ];
 
 

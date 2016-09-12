@@ -8,7 +8,7 @@ generateContacts::usage="generateContacts[] sets randomly the contact mechanism 
 setBoundaryConditions::usage="setBoundaryConditions[loads] sets the loads to be applied.";
 solveProblem::usage="solveProblem[] applies the loads, computes the solution and displays the wall.";
 nelx;nely;b;h;P;\[Mu];contacts;
-\[Sigma]v;\[Sigma]h;loads;
+\[Sigma]v;\[Sigma]h;loads;eqCheck;
 
 
 Begin["`Private`"];
@@ -52,7 +52,7 @@ For[j=1,j<=nelx,j++,
 
 solveProblem[]:=Module[{},
 applyLoads[];
-solveWall[];
+eqCheck=solveWall[];
 displayWall[]
 ];
 
