@@ -12,16 +12,16 @@ Needs["ProbabilisticBricks`Problem`"];
 Needs["ProbabilisticBricks`Wall`"];
 
 
-switchLR[p_]:=Module[{pnew},
+swapLR[p_]:=Module[{pnew},
 pnew=Table[0,{20}];
-(*switch normal forces*)
-pnew[[1;;4;;2]]=p[[17;;20;;2]];pnew[[17;;20;;2]]=p[[1;;4;;2]];(*Ls\[UndirectedEdge]Ld*)
-pnew[[5;;9;;2]]=p[[9;;5;;-2]];(*Ns\[UndirectedEdge]Nc\[UndirectedEdge]Nd*)
-pnew[[11;;15;;2]]=p[[15;;11;;-2]];(*Rs\[UndirectedEdge]Rc\[UndirectedEdge]Rd*)
-(*switch tangential forces*)
-pnew[[2;;4;;2]]=-p[[18;;20;;2]];pnew[[18;;20;;2]]=-p[[2;;4;;2]];(*Vsu\[UndirectedEdge]Vdu,Vsb\[UndirectedEdge]Vdb*)
-pnew[[6;;10;;2]]=-p[[10;;6;;-2]];(*Ts\[UndirectedEdge]Td*)
-pnew[[12;;16;;2]]=-p[[16;;12;;-2]];(*Vs\[UndirectedEdge]Vc\[UndirectedEdge]Vd*)
+(*swap normal forces*)
+pnew[[1;;4;;2]]=p[[17;;20;;2]];pnew[[17;;20;;2]]=p[[1;;4;;2]];(*Ls--Ld*)
+pnew[[5;;9;;2]]=p[[9;;5;;-2]];(*Ns--Nc--Nd*)
+pnew[[11;;15;;2]]=p[[15;;11;;-2]];(*Rs--Rc--Rd*)
+(*swap tangential forces*)
+pnew[[2;;4;;2]]=-p[[18;;20;;2]];pnew[[18;;20;;2]]=-p[[2;;4;;2]];(*Vsu--Vdu,Vsb--Vdb*)
+pnew[[6;;10;;2]]=-p[[10;;6;;-2]];(*Ts--Td*)
+pnew[[12;;16;;2]]=-p[[16;;12;;-2]];(*Vs--Vc--Vd*)
 
 pnew
 ];
@@ -42,11 +42,11 @@ Rt=Vsu+Vsb+Ns+Nc+P+Nd-Vdu-Vdb;
 H=Lsu+Lsb+Ts+Tc+Td-Ldu-Ldb;
 
 If[contact==1,
-(*meccanismo 1*)
+(*mechanism 1*)
 Rc=0;
 Rs=Max[Md/b,0];
 Rd=Rt-Rs;,
-(*meccanismo 2 e 3*)
+(*mechanism 2 or 3*)
 Rs=Max[Mc/(b/2),0];
 Rd=Piecewise[{{Max[-Mc/(b/2),0],Md>=0},{Rt,Md<0}}];
 Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];
@@ -106,11 +106,11 @@ Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vc,Md<0}}];
 
 
 solveBlockR2L[pBlock_,contact_]:=Module[{},
-switchLR[solveBlockL2R[switchLR[pBlock],contact]]
+swapLR[solveBlockL2R[swapLR[pBlock],contact]]
 ];
 
 solveHalvedBlockR2L[pBlock_,isOnLeftEdge_]:=Module[{},
-switchLR[solveHalvedBlockL2R[switchLR[pBlock],!isOnLeftEdge]]
+swapLR[solveHalvedBlockL2R[swapLR[pBlock],!isOnLeftEdge]]
 ];
 
 
