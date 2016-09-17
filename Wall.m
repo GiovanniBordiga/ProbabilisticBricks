@@ -76,7 +76,7 @@ Nd=0;Td=0;
 ];,
 
 (*block in not internal*)
-If[isBlockOnLeftEdge[{nRow,j}],(*TODO: modify to support edge blocks!*)
+If[isBlockOnLeftEdge[{nRow,j}],
 (*block on the left edge*)
 Ncd=\[Sigma]v[[nBlockUR,7]];Tcd=\[Sigma]v[[nBlockUR,8]];
 If[contacts[[nBlockUR]]==2,
