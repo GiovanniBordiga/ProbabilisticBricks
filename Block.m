@@ -163,7 +163,7 @@ Rc=Rt-Rs-Rd;
 Vs=V[H,Rt,\[Mu],Rs];
 Vd=V[H,Rt,\[Mu],Rd];
 Vc=V[H,Rt,\[Mu],Rc];
-(*check if the friction criterion is satified*)
+(*check if the friction criterion is satisfied*)
 If[H-Vs-Vc-Vd>0,
 Ldb=H+Ldb-Vs-Vc-Vd;
 ];
