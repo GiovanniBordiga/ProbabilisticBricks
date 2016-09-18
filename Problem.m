@@ -39,12 +39,12 @@ contacts=RandomInteger[{1,3},totalBlocks]
 
 
 setBoundaryConditions[$loads_]:=Module[{},
-initStressVectors[nelx,nely];
 loads=$loads;
 ];
 
 
 applyLoads[]:=Module[{j},
+initStressVectors[nelx,nely];
 For[j=1,j<=nelx,j++,
 \[Sigma]v[[j]]=Join[loads[[6(j-1)+1;;6j]],{0,0,0,0,0,0}];
 ];
