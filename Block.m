@@ -30,7 +30,10 @@ pnew
 V[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
 
 
-solveBlockL2R[pBlock_,contact_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt},
+V1[H_,V2e_,V3e_,R1_,R2_,R3_,\[Mu]_]:=Piecewise[{{H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e],Abs[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]]<=\[Mu] R1},{\[Mu] R1 Sign[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]],Abs[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]]>\[Mu] R1}}];
+
+
+solveBlockL2R[pBlock_,contact_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt,Vse,Vce,Vde},
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=pBlock;
 
 (*solution left to right*)
@@ -45,17 +48,23 @@ If[contact==1,
 (*mechanism 1*)
 Rc=0;
 Rs=Max[Md/b,0];
-Rd=Rt-Rs;,
+Rd=Rt-Rs;
+Vse=Ts+Tc/2+Lsu+Lsb;
+Vce=0;
+Vde=Td+Tc/2-Ldu-Ldb;,
 (*mechanism 2 or 3*)
 Rs=Max[Mc/(b/2),0];
 Rd=Piecewise[{{Max[-Mc/(b/2),0],Md>=0},{Rt,Md<0}}];
 Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];
+Vse=Piecewise[{{Ts+Lsu+Lsb,Mc>=0}}];
+Vce=Piecewise[{{Tc+Td-Ldu-Ldb,Mc>=0},{Tc+Ts+Lsu+Lsb,Mc<0}}];
+Vde=Piecewise[{{Td-Ldu-Ldb,Mc<=0}}];
 ];
 
 Ldu=Max[-Md/h,0];
-Vs=V[H,Rt,\[Mu],Rs];
-Vc=V[H,Rt,\[Mu],Rc];
-Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
+Vs=V1[H,Vce,Vde,Rs,Rc,Rd,\[Mu]];
+Vc=V1[H,Vse,Vde,Rc,Rs,Rd,\[Mu]];
+Vd=Piecewise[{{V1[H,Vse,Vce,Rd,Rc,Rs,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
 Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
