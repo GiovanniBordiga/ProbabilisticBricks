@@ -27,10 +27,10 @@ pnew
 ];
 
 
-V[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
+Vsimp[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
 
 
-V1[H_,V2e_,V3e_,R1_,R2_,R3_,\[Mu]_]:=Piecewise[{{H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e],Abs[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]]<=\[Mu] R1},{\[Mu] R1 Sign[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]],Abs[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]]>\[Mu] R1}}];
+Vbm[H_,V2e_,V3e_,R1_,R2_,R3_,\[Mu]_]:=Piecewise[{{H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e],Abs[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]]<=\[Mu] R1},{\[Mu] R1 Sign[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]],Abs[H-Min[Abs[V2e],\[Mu] R2]Sign[V2e]-Min[Abs[V3e],\[Mu] R3]Sign[V3e]]>\[Mu] R1}}];
 
 
 solveBlockL2R[pBlock_,contact_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt,Vse,Vce,Vde},
@@ -49,6 +49,7 @@ If[contact==1,
 Rc=0;
 Rs=Max[Md/b,0];
 Rd=Rt-Rs;
+(*compute the elastic value of the base friction forces*)
 Vse=Ts+Tc/2+Lsu+Lsb;
 Vce=0;
 Vde=Td+Tc/2-Ldu-Ldb;,
@@ -56,22 +57,23 @@ Vde=Td+Tc/2-Ldu-Ldb;,
 Rs=Max[Mc/(b/2),0];
 Rd=Piecewise[{{Max[-Mc/(b/2),0],Md>=0},{Rt,Md<0}}];
 Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];
+(*compute the elastic value of the base friction forces*)
 Vse=Piecewise[{{Ts+Lsu+Lsb,Mc>=0}}];
 Vce=Piecewise[{{Tc+Td-Ldu-Ldb,Mc>=0},{Tc+Ts+Lsu+Lsb,Mc<0}}];
 Vde=Piecewise[{{Td-Ldu-Ldb,Mc<=0}}];
 ];
 
 Ldu=Max[-Md/h,0];
-Vs=V1[H,Vce,Vde,Rs,Rc,Rd,\[Mu]];
-Vc=V1[H,Vse,Vde,Rc,Rs,Rd,\[Mu]];
-Vd=Piecewise[{{V1[H,Vse,Vce,Rd,Rc,Rs,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];
+Vs=Vbm[H,Vce,Vde,Rs,Rc,Rd,\[Mu]];
+Vc=Vbm[H,Vse,Vde,Rc,Rs,Rd,\[Mu]];
+Vd=Piecewise[{{Vbm[H,Vse,Vce,Rd,Rs,Rc,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
+Ldb=H-Ldu-Vs-Vc-Vd;
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
 ];
 
 
-solveHalvedBlockL2R[pBlock_,isOnLeftEdge_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt},
+solveHalvedBlockL2R[pBlock_,isOnLeftEdge_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt,Vse,Vce,Vde},
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=pBlock;
 
 (*solution left to right*)
@@ -87,28 +89,33 @@ Mc=(Ns+Vsu+Vsb-Nd+Vdu+Vdb)b/2-h(Lsu-Ldu+Ts+Tc+Td)-P/2b/4;
 (*compute reactions for the halved block - only one mechanism*)
 Rs=0;
 Rd=Piecewise[{{Max[-Mc/(b/2),0],Md>=0},{Rt,Md<0}}];
-Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];,
+Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];
+(*compute the elastic value of the base friction forces*)
+Vse=0;
+Vce=Tc+Ts+Lsu+Lsb;
+Vde=Td-Ldu-Ldb;,
 (*halved block on the right edge*)
 Ms=(Nc/2+P/2/4+Nd-Vdu-Vdb)b+h(Lsu-Ldu+Ts+Tc+Td);
-Md=(Ns+Vsu+Vsb-Nd+Vdu+Vdb)b/2-h(Lsu-Ldu+Ts+Tc+Td)+P/2b/4;
+Md=(Ns+Vsu+Vsb-Nd+Vdu+Vdb)b/2-h(Lsu-Ldu+Ts+Tc+Td)+P/2b/4; (*it's actually Mc...*)
 (*compute reactions for the halved block - only one mechanism*)
 Rd=0;
 Rc=Piecewise[{{Max[Ms/(b/2),0],Md>=0},{Rt,Md<0}}];
 Rs=Piecewise[{{Max[Rt-Rc-Rd,0],Md>=0},{0,Md<0}}];
+(*compute the elastic value of the base friction forces*)
+Vse=Ts+Lsu+Lsb;
+Vce=Tc+Td-Ldu-Ldb;
+Vde=0;
 ];
 
 Ldu=Max[-Md/h,0];
-Vs=V[H,Rt,\[Mu],Rs];
-Ldu=Max[-Md/h,0];
-Vs=V[H,Rt,\[Mu],Rs];
+Vs=Vbm[H,Vce,Vde,Rs,Rc,Rd,\[Mu]];
 If[isOnLeftEdge,
-Vc=V[H,Rt,\[Mu],Rc];
-Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];,
+Vc=Vbm[H,Vse,Vde,Rc,Rs,Rd,\[Mu]];
+Vd=Piecewise[{{Vbm[H,Vse,Vce,Rd,Rs,Rc,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];,
 Vd=0;
-Vc=Piecewise[{{V[H,Rt,\[Mu],Rc],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vc,Md<0}}];
+Vc=Piecewise[{{Vbm[H,Vse,Vde,Rc,Rs,Rd,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}];
 ];
+Ldb=H-Ldu-Vs-Vc-Vd;
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
 ];
@@ -139,7 +146,7 @@ solveHalvedBlockR2L[pBlock,isBlockOnLeftEdge[{nRow,j}]]
 ];
 
 
-correctBlock[pBlock_,contact_,{nRow_,j_}]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Mc,Md,H,Rt},
+correctBlock[pBlock_,contact_,{nRow_,j_}]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Mc,Md,H,Rt,Vse,Vce,Vde},
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}=pBlock;
 
 If[isBlockHalved[{nRow,j}],
@@ -160,18 +167,26 @@ If[Abs[Mc/Rt]>b/2,
 ,
 (*base mechanism is possible*)
 If[contact==1,
-(*meccanismo 1*)
+(*mechanism 1*)
 Rc=0;
 Rs=Md/b;
-Rd=Rt-Rs;,
-(*meccanismo 2 e 3*)
+Rd=Rt-Rs;
+(*compute the elastic value of the base friction forces*)
+Vse=Ts+Tc/2+Lsu+Lsb;
+Vce=0;
+Vde=Td+Tc/2-Ldu-Ldb;,
+(*mechanism 2 and 3*)
 Rs=Max[Mc/(b/2),0];
 Rd=Max[-Mc/(b/2),0];
 Rc=Rt-Rs-Rd;
+(*compute the elastic value of the base friction forces*)
+Vse=Piecewise[{{Ts+Lsu+Lsb,Mc>=0}}];
+Vce=Piecewise[{{Tc+Td-Ldu-Ldb,Mc>=0},{Tc+Ts+Lsu+Lsb,Mc<0}}];
+Vde=Piecewise[{{Td-Ldu-Ldb,Mc<=0}}];
 ];
-Vs=V[H,Rt,\[Mu],Rs];
-Vd=V[H,Rt,\[Mu],Rd];
-Vc=V[H,Rt,\[Mu],Rc];
+Vs=Vbm[H,Vce,Vde,Rs,Rc,Rd,\[Mu]];
+Vc=Vbm[H,Vse,Vde,Rc,Rs,Rd,\[Mu]];
+Vd=Vbm[H,Vse,Vce,Rd,Rs,Rc,\[Mu]];
 (*check if the friction criterion is satisfied*)
 If[H-Vs-Vc-Vd>0,
 Ldb=H+Ldb-Vs-Vc-Vd;
