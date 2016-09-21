@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    323170,       5607]
-NotebookOptionsPosition[    321990,       5563]
-NotebookOutlinePosition[    322324,       5578]
-CellTagsIndexPosition[    322281,       5575]
+NotebookDataLength[    323971,       5623]
+NotebookOptionsPosition[    322649,       5576]
+NotebookOutlinePosition[    322982,       5591]
+CellTagsIndexPosition[    322939,       5588]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -162,10 +162,24 @@ Cell["Solution", "Section",
 
 Cell[CellGroupData[{
 
+Cell["\<\
+Solve the problem and show the wall colored with the selected filter (\
+\[OpenCurlyDoubleQuote]stress_state\[CloseCurlyDoubleQuote] or \
+\[OpenCurlyDoubleQuote]contacts_state\[CloseCurlyDoubleQuote])\
+\>", "Text",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
+ CellChangeTimes->{{3.6826931669704123`*^9, 3.682693463201467*^9}, {
+  3.682694561031879*^9, 3.682694568271435*^9}, {3.6834734926800823`*^9, 
+  3.6834735843904753`*^9}, {3.683473920634983*^9, 3.6834739218856983`*^9}}],
+
 Cell[BoxData[
- RowBox[{"solveProblem", "[", "]"}]], "Input",
+ RowBox[{"solveProblemAndDisplay", "[", "\"\<stress_state\>\"", 
+  "]"}]], "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.},
  CellChangeTimes->{{3.681703689430151*^9, 3.6817037136457853`*^9}, 
-   3.682660309525639*^9, 3.682687866018054*^9}],
+   3.682660309525639*^9, 3.682687866018054*^9, {3.683473426172127*^9, 
+   3.683473450985038*^9}, 3.683473492680296*^9}]
+}, Open  ]],
 
 Cell[BoxData[
  GraphicsBox[{{
@@ -5559,10 +5573,9 @@ hIOIY/ujh9+RL2+4+Q3ATn3is6jw9jRfAW8To0ed8W/nWXHcjicOn4TlOTaQ
 DY31yS/8t9Cx/xusyfw/pUc3sA==\
 \>"]]
 }, Open  ]]
-}, Open  ]]
 },
-WindowSize->{755, 564},
-WindowMargins->{{83, Automatic}, {Automatic, 56}},
+WindowSize->{1366, 744},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -5584,7 +5597,7 @@ Cell[695, 25, 130, 2, 32, "Input"]
 Cell[CellGroupData[{
 Cell[862, 32, 107, 1, 65, "Section"],
 Cell[CellGroupData[{
-Cell[994, 37, 501, 8, 77, "Text",
+Cell[994, 37, 501, 8, 55, "Text",
  CellGroupingRules->{GroupTogetherGrouping, 10001.}],
 Cell[1498, 47, 1091, 17, 32, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10001.}]
@@ -5604,10 +5617,13 @@ Cell[4100, 112, 1720, 41, 121, "Input"]
 Cell[CellGroupData[{
 Cell[5857, 158, 146, 2, 65, "Section"],
 Cell[CellGroupData[{
-Cell[6028, 164, 176, 3, 32, "Input"],
-Cell[6207, 169, 315755, 5390, 814, 262431, 4514, "CachedBoxData", "BoxData", \
+Cell[6028, 164, 494, 8, 33, "Text",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.}],
+Cell[6525, 174, 338, 6, 32, "Input",
+ CellGroupingRules->{GroupTogetherGrouping, 10000.}]
+}, Open  ]],
+Cell[6878, 183, 315755, 5390, 814, 262431, 4514, "CachedBoxData", "BoxData", \
 "Output"]
-}, Open  ]]
 }, Open  ]]
 }
 ]

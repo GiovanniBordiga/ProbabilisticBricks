@@ -9,7 +9,7 @@ isBlockOnLeftEdge::usage="isBlockOnLeftEdge[{nRow,j}] returns True if the block 
 isBlockOnRightEdge::usage="isBlockOnRightEdge[{nRow,j}] returns True if the block in position {nRow,j} is on the right edge of the wall.";
 isBlockHalved::usage="isBlockHalved[{nRow,j}] returns True if the block in position {nRow,j} is half the size of a normal block."
 solveWall::usage="solveWall[] computes the stress vectors for the wall.";
-displayWall::usage="displayWall[] generates a drawing of the wall showing the stress path.";
+displayWall::usage="displayWall[filter] generates a drawing of the wall colored with the selected filter.";
 
 
 Begin["`Private`"];
@@ -493,11 +493,11 @@ ptTR={b(nelx-1),(nely-i+1)h};
 (*create graphical elements*)
 blockLoads=getBlockLoads[{i,j}];
 Switch[filter,
-"stress state",
+"stress_state",
 (*blocks colored using stress measure*)
 AppendTo[stressAvg,Norm[blockLoads]];(*stress measure defined as the norm of 'blockLoads'*)
 AppendTo[blocks,{EdgeForm[{Black}],GrayLevel[0.5],Rectangle[ptBL,ptTR]}];,
-"contacts state",
+"contacts_state",
 (*blocks colored using the contacts' state*)
 AppendTo[blocks,{EdgeForm[{Black}],assignColorBlock[blockLoads,{i,j}],Rectangle[ptBL,ptTR]}];
 ];
