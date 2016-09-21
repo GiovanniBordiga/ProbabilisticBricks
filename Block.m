@@ -27,7 +27,7 @@ pnew
 ];
 
 
-V[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
+Vsimp[H_,Rt_,\[Mu]_,R_]:=Piecewise[{{R/Rt H,Abs[H]<=\[Mu] Rt},{Sign[H]\[Mu] R,Abs[H]>\[Mu] Rt}}];
 
 
 solveBlockL2R[pBlock_,contact_]:=Module[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb,Ms,Mc,Md,H,Rt},
@@ -53,9 +53,9 @@ Rc=Piecewise[{{Max[Rt-Rs-Rd,0],Md>=0},{0,Md<0}}];
 ];
 
 Ldu=Max[-Md/h,0];
-Vs=V[H,Rt,\[Mu],Rs];
-Vc=V[H,Rt,\[Mu],Rc];
-Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
+Vs=Vsimp[H,Rt,\[Mu],Rs];
+Vc=Vsimp[H,Rt,\[Mu],Rc];
+Vd=Piecewise[{{Vsimp[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
 Ldb=H-Ldu-Vs-Vc-Vd;
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
@@ -89,17 +89,14 @@ Rs=Piecewise[{{Max[Rt-Rc-Rd,0],Md>=0},{0,Md<0}}];
 ];
 
 Ldu=Max[-Md/h,0];
-Vs=V[H,Rt,\[Mu],Rs];
-Ldu=Max[-Md/h,0];
-Vs=V[H,Rt,\[Mu],Rs];
+Vs=Vsimp[H,Rt,\[Mu],Rs];
 If[isOnLeftEdge,
-Vc=V[H,Rt,\[Mu],Rc];
-Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];,
+Vc=Vsimp[H,Rt,\[Mu],Rc];
+Vd=Piecewise[{{Vsimp[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];,
 Vd=0;
-Vc=Piecewise[{{V[H,Rt,\[Mu],Rc],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vc,Md<0}}];
+Vc=Piecewise[{{Vsimp[H,Rt,\[Mu],Rc],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}];
 ];
+Ldb=H-Ldu-Vs-Vc-Vd;
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
 ];
@@ -151,18 +148,18 @@ If[Abs[Mc/Rt]>b/2,
 ,
 (*base mechanism is possible*)
 If[contact==1,
-(*meccanismo 1*)
+(*mechanism 1*)
 Rc=0;
 Rs=Md/b;
 Rd=Rt-Rs;,
-(*meccanismo 2 e 3*)
+(*mechanism 2 and 3*)
 Rs=Max[Mc/(b/2),0];
 Rd=Max[-Mc/(b/2),0];
 Rc=Rt-Rs-Rd;
 ];
-Vs=V[H,Rt,\[Mu],Rs];
-Vd=V[H,Rt,\[Mu],Rd];
-Vc=V[H,Rt,\[Mu],Rc];
+Vs=Vsimp[H,Rt,\[Mu],Rs];
+Vd=Vsimp[H,Rt,\[Mu],Rd];
+Vc=Vsimp[H,Rt,\[Mu],Rc];
 (*check if the friction criterion is satisfied*)
 If[H-Vs-Vc-Vd>0,
 Ldb=H+Ldb-Vs-Vc-Vd;
