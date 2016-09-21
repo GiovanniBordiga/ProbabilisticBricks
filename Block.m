@@ -56,7 +56,7 @@ Ldu=Max[-Md/h,0];
 Vs=V[H,Rt,\[Mu],Rs];
 Vc=V[H,Rt,\[Mu],Rc];
 Vd=Piecewise[{{V[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
-Ldb=Piecewise[{{Max[H-\[Mu] Rt,0],Md>=0},{H-Ldu-Vd,Md<0}}];
+Ldb=H-Ldu-Vs-Vc-Vd;
 
 {Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
 ];
