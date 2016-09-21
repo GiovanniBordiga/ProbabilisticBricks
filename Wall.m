@@ -440,7 +440,36 @@ Graphics[arrows]
 ];
 
 
-displayWall[]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTR,i,j,totalBlocksInRow},
+assignColorBlock[blockLoads_,{nRow_,j_}]:=Module[{colorBlock,Rs,Vs,Rc,Vc,Rd,Vd},
+{Rs,Vs,Rc,Vc,Rd,Vd}=blockLoads[[11;;16]];
+(*blocks colored using the contacts' state*)
+If[{Rs,Rc}=={0,0}||{Rc,Rd}=={0,0},
+(*no base mechanism*)
+colorBlock=Blue;,
+(*base mechanisms*)
+If[Abs[Vs+Vc+Vd]-\[Mu](Rs+Rc+Rd)==0,
+(*both contacts are plastic*)
+colorBlock=Red;,
+If[isBlockHalved[{nRow,j}],
+(*halved blocks*)
+If[isBlockOnLeftEdge[{nRow,j}],
+colorBlock=Piecewise[{{Green,Abs[Vc]-\[Mu] Rc<0&&Abs[Vd]-\[Mu] Rd<0},{Orange,(Abs[Vc]-\[Mu] Rc)(Abs[Vd]-\[Mu] Rd)==0}}];,
+colorBlock=Piecewise[{{Green,Abs[Vc]-\[Mu] Rc<0&&Abs[Vs]-\[Mu] Rs<0},{Orange,(Abs[Vc]-\[Mu] Rc)(Abs[Vs]-\[Mu] Rs)==0}}];
+];,
+(*normal blocks*)
+If[contacts[[getBlockNum[{nRow,j}]]]==1,
+colorBlock=Piecewise[{{Green,Abs[Vs]-\[Mu] Rs<0&&Abs[Vd]-\[Mu] Rd<0},{Orange,(Abs[Vs]-\[Mu] Rs)(Abs[Vd]-\[Mu] Rd)==0}}];,
+colorBlock=Piecewise[{{Green,(Abs[Vs]-\[Mu] Rs<0&&Abs[Vc]-\[Mu] Rc<0)||(Abs[Vd]-\[Mu] Rd<0&&Abs[Vc]-\[Mu] Rc<0)||(Abs[Vc]-\[Mu] Rc<0&&Rd==0&&Rs==0)},{Orange,(Abs[Vs]-\[Mu] Rs)(Abs[Vc]-\[Mu] Rc)==0||(Abs[Vd]-\[Mu] Rd)(Abs[Vc]-\[Mu] Rc)==0}}];
+];
+];
+];
+];
+
+colorBlock
+];
+
+
+displayWall[filter_]:=Module[{blocks,stressAvg,interfaces,frictionRatio,blockLoads,ptBL,ptBR,ptTR,i,j,totalBlocksInRow},
 blocks={}; stressAvg={};interfaces={};
 For[i=1,i<=nely,i++,
 totalBlocksInRow=getTotalBlocksInRow[i];
@@ -461,16 +490,25 @@ ptTR={b(nelx-1),(nely-i+1)h};
 ];
 ];
 
-(*create graphical elements colored using stress measure*)
+(*create graphical elements*)
 blockLoads=getBlockLoads[{i,j}];
+Switch[filter,
+"stress state",
+(*blocks colored using stress measure*)
 AppendTo[stressAvg,Norm[blockLoads]];(*stress measure defined as the norm of 'blockLoads'*)
-AppendTo[blocks,{EdgeForm[{Black}],GrayLevel[0.5],Rectangle[ptBL,ptTR]}];
+AppendTo[blocks,{EdgeForm[{Black}],GrayLevel[0.5],Rectangle[ptBL,ptTR]}];,
+"contacts state",
+(*blocks colored using the contacts' state*)
+AppendTo[blocks,{EdgeForm[{Black}],assignColorBlock[blockLoads,{i,j}],Rectangle[ptBL,ptTR]}];
+];
 
 frictionRatio=Piecewise[{{Abs[Total[blockLoads[[12;;16;;2]]]]/(\[Mu] Total[blockLoads[[11;;15;;2]]]),Total[blockLoads[[11;;15;;2]]]>0}}];
 AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBL,ptBR}]}];(*friction on the base*)
 ];
 ];
-blocks[[;;,2]]=GrayLevel/@(stressAvg/Max[stressAvg]);(*assign GrayLevel based on strees*)
+If[filter=="stress state",
+blocks[[;;,2]]=GrayLevel/@(stressAvg/Max[stressAvg]);(*assign GrayLevel based on stress*)
+];
 
 Show[Graphics[blocks],Graphics[interfaces],displayLoads[]]
 ];
