@@ -6,7 +6,9 @@ BeginPackage["ProbabilisticBricks`Problem`"];
 setProblemProperties::usage="setProblemProperties[nelx,nely,b,h,P,\[Mu],contacts] set the properites of the current problem.";
 generateContacts::usage="generateContacts[] sets randomly the contact mechanism to every block.";
 setBoundaryConditions::usage="setBoundaryConditions[loads] sets the loads to be applied.";
-solveProblem::usage="solveProblem[] applies the loads, computes the solution and displays the wall.";
+solveProblem::usage="solveProblem[] applies the loads, computes the solution.";
+solveProblemAndDisplay::usage="solveProblemAndDisplay[filter] applies the loads, computes the solution and displays the wall colored with the selected filter.";
+displayWallWithFilter::usage="displayWallWithFilter[filter] displays the wall colored with the selected filter.";
 nelx;nely;b;h;P;\[Mu];contacts;
 \[Sigma]v;\[Sigma]h;loads;eqCheck;
 
@@ -54,7 +56,18 @@ For[j=1,j<=nelx,j++,
 solveProblem[]:=Module[{},
 applyLoads[];
 eqCheck=solveWall[];
-displayWall[]
+];
+
+
+displayWallWithFilter[filter_]:=Module[{},
+displayWall[filter]
+];
+
+
+solveProblemAndDisplay[filter_]:=Module[{},
+applyLoads[];
+eqCheck=solveWall[];
+displayWall[filter]
 ];
 
 
