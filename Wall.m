@@ -418,7 +418,7 @@ rowEqCheck
 ];
 
 
-displayLoads[]:=Module[{arrows,topLoads,x,hArrow,vArrow,hLoad,vLoad,maxLoad},
+buildLoadsGraphics[]:=Module[{arrows,topLoads,x,hArrow,vArrow,hLoad,vLoad,maxLoad},
 arrows={};
 maxLoad=Max[Max[Total[\[Sigma]v[[1;;nelx,{2,4,6}]],{2}]],Max[Total[\[Sigma]v[[1;;nelx,{1,3,5}]],{2}]]];
 For[j=1,j<=nelx,j++,
@@ -510,7 +510,7 @@ If[filter=="stress state",
 blocks[[;;,2]]=GrayLevel/@(stressAvg/Max[stressAvg]);(*assign GrayLevel based on stress*)
 ];
 
-Show[Graphics[blocks],Graphics[interfaces],displayLoads[]]
+Show[Graphics[blocks],Graphics[interfaces],buildLoadsGraphics[]]
 ];
 
 
