@@ -69,7 +69,7 @@ Vc=Vbm[H,Vse,Vde,Rc,Rs,Rd,\[Mu]];
 Vd=Piecewise[{{Vbm[H,Vse,Vce,Rd,Rs,Rc,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
 Ldb=H-Ldu-Vs-Vc-Vd;
 
-{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+Chop[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}]
 ];
 
 
@@ -117,7 +117,7 @@ Vc=Piecewise[{{Vbm[H,Vse,Vde,Rc,Rs,Rd,\[Mu]],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}]
 ];
 Ldb=H-Ldu-Vs-Vc-Vd;
 
-{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+Chop[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}]
 ];
 
 
@@ -197,7 +197,7 @@ Lsb=-(H-Lsb-Vs-Vc-Vd);
 ];
 ];
 
-{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+Chop[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}]
 ];
 
 
