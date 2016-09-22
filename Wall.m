@@ -420,7 +420,8 @@ rowEqCheck
 
 buildLoadsGraphics[]:=Module[{arrows,topLoads,x,hArrow,vArrow,hLoad,vLoad,maxLoad},
 arrows={};
-maxLoad=Max[Max[Total[\[Sigma]v[[1;;nelx,{2,4,6}]],{2}]],Max[Total[\[Sigma]v[[1;;nelx,{1,3,5}]],{2}]]];
+maxLoad=Max[Max[Abs/@Total[\[Sigma]v[[1;;nelx,{2,4,6}]],{2}]],Max[Abs/@Total[\[Sigma]v[[1;;nelx,{1,3,5}]],{2}]]];
+If[maxLoad!=0,
 For[j=1,j<=nelx,j++,
 (*compute vertical and horizontal resultants acting on top of the current block*)
 hLoad=Total[\[Sigma]v[[j,{2,4,6}]]]/maxLoad b;
@@ -433,6 +434,7 @@ AppendTo[arrows,{Arrowheads[0.25/nelx],hArrow}];
 If[vLoad!=0,
 vArrow=Arrow[{{x,(nely+0.15)h+vLoad},{x,(nely+0.15)h}}];
 AppendTo[arrows,{Arrowheads[0.25/nelx],vArrow}];
+];
 ];
 ];
 
