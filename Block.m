@@ -58,7 +58,7 @@ Vc=Vsimp[H,Rt,\[Mu],Rc];
 Vd=Piecewise[{{Vsimp[H,Rt,\[Mu],Rd],Md>=0},{Min[H-Ldu,\[Mu] Rd],Md<0}}];
 Ldb=H-Ldu-Vs-Vc-Vd;
 
-{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+Chop[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}]
 ];
 
 
@@ -98,7 +98,7 @@ Vc=Piecewise[{{Vsimp[H,Rt,\[Mu],Rc],Md>=0},{Min[H-Ldu,\[Mu] Rc],Md<0}}];
 ];
 Ldb=H-Ldu-Vs-Vc-Vd;
 
-{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+Chop[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}]
 ];
 
 
@@ -170,7 +170,7 @@ Lsb=-(H-Lsb-Vs-Vc-Vd);
 ];
 ];
 
-{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}
+Chop[{Lsu,Vsu,Lsb,Vsb,Ns,Ts,Nc,Tc,Nd,Td,Rs,Vs,Rc,Vc,Rd,Vd,Ldu,Vdu,Ldb,Vdb}]
 ];
 
 
