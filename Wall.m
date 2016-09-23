@@ -449,19 +449,19 @@ If[{Rs,Rc}=={0,0}||{Rc,Rd}=={0,0},
 (*no base mechanism*)
 colorBlock=Blue;,
 (*base mechanisms*)
-If[Abs[Vs+Vc+Vd]-\[Mu](Rs+Rc+Rd)==0,
+If[Chop[Abs[Vs+Vc+Vd]-\[Mu](Rs+Rc+Rd)]==0,
 (*both contacts are plastic*)
 colorBlock=Red;,
 If[isBlockHalved[{nRow,j}],
 (*halved blocks*)
 If[isBlockOnLeftEdge[{nRow,j}],
-colorBlock=Piecewise[{{Green,Abs[Vc]-\[Mu] Rc<0&&Abs[Vd]-\[Mu] Rd<0},{Orange,(Abs[Vc]-\[Mu] Rc)(Abs[Vd]-\[Mu] Rd)==0}}];,
-colorBlock=Piecewise[{{Green,Abs[Vc]-\[Mu] Rc<0&&Abs[Vs]-\[Mu] Rs<0},{Orange,(Abs[Vc]-\[Mu] Rc)(Abs[Vs]-\[Mu] Rs)==0}}];
+colorBlock=Piecewise[{{Green,Abs[Vc]-\[Mu] Rc<0&&Abs[Vd]-\[Mu] Rd<0},{Orange,Chop[(Abs[Vc]-\[Mu] Rc)(Abs[Vd]-\[Mu] Rd)]==0}}];,
+colorBlock=Piecewise[{{Green,Abs[Vc]-\[Mu] Rc<0&&Abs[Vs]-\[Mu] Rs<0},{Orange,Chop[(Abs[Vc]-\[Mu] Rc)(Abs[Vs]-\[Mu] Rs)]==0}}];
 ];,
 (*normal blocks*)
 If[contacts[[getBlockNum[{nRow,j}]]]==1,
-colorBlock=Piecewise[{{Green,Abs[Vs]-\[Mu] Rs<0&&Abs[Vd]-\[Mu] Rd<0},{Orange,(Abs[Vs]-\[Mu] Rs)(Abs[Vd]-\[Mu] Rd)==0}}];,
-colorBlock=Piecewise[{{Green,(Abs[Vs]-\[Mu] Rs<0&&Abs[Vc]-\[Mu] Rc<0)||(Abs[Vd]-\[Mu] Rd<0&&Abs[Vc]-\[Mu] Rc<0)||(Abs[Vc]-\[Mu] Rc<0&&Rd==0&&Rs==0)},{Orange,(Abs[Vs]-\[Mu] Rs)(Abs[Vc]-\[Mu] Rc)==0||(Abs[Vd]-\[Mu] Rd)(Abs[Vc]-\[Mu] Rc)==0}}];
+colorBlock=Piecewise[{{Green,Abs[Vs]-\[Mu] Rs<0&&Abs[Vd]-\[Mu] Rd<0},{Orange,Chop[(Abs[Vs]-\[Mu] Rs)(Abs[Vd]-\[Mu] Rd)]==0}}];,
+colorBlock=Piecewise[{{Green,(Abs[Vs]-\[Mu] Rs<0&&Abs[Vc]-\[Mu] Rc<0)||(Abs[Vd]-\[Mu] Rd<0&&Abs[Vc]-\[Mu] Rc<0)||(Abs[Vc]-\[Mu] Rc<0&&Rd==0&&Rs==0)},{Orange,Chop[(Abs[Vs]-\[Mu] Rs)(Abs[Vc]-\[Mu] Rc)]==0||Chop[(Abs[Vd]-\[Mu] Rd)(Abs[Vc]-\[Mu] Rc)]==0}}];
 ];
 ];
 ];
