@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    742543,      14121]
-NotebookOptionsPosition[    741362,      14077]
-NotebookOutlinePosition[    741695,      14092]
-CellTagsIndexPosition[    741652,      14089]
+NotebookDataLength[    742632,      14123]
+NotebookOptionsPosition[    741451,      14079]
+NotebookOutlinePosition[    741784,      14094]
+CellTagsIndexPosition[    741741,      14091]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -177,9 +177,11 @@ Cell["Solution", "Section",
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"solveProblem", "[", "]"}]], "Input",
+ RowBox[{"solveProblemAndDisplay", "[", "\"\<stress_state\>\"", 
+  "]"}]], "Input",
  CellChangeTimes->{{3.681703689430151*^9, 3.6817037136457853`*^9}, 
-   3.682660309525639*^9, 3.682687866018054*^9}],
+   3.682660309525639*^9, 3.682687866018054*^9, {3.683605712364641*^9, 
+   3.6836057185805607`*^9}}],
 
 Cell[BoxData[
  GraphicsBox[{{
@@ -14118,8 +14120,8 @@ Cell[4396, 116, 2185, 51, 143, "Input"]
 Cell[CellGroupData[{
 Cell[6618, 172, 146, 2, 65, "Section"],
 Cell[CellGroupData[{
-Cell[6789, 178, 176, 3, 32, "Input"],
-Cell[6968, 183, 734366, 13890, 569, 703298, 13379, "CachedBoxData", \
+Cell[6789, 178, 265, 5, 32, "Input"],
+Cell[7057, 185, 734366, 13890, 569, 703298, 13379, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]]
 }, Open  ]]
