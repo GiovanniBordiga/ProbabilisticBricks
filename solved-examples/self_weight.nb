@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    762967,      14460]
-NotebookOptionsPosition[    761787,      14416]
-NotebookOutlinePosition[    762120,      14431]
-CellTagsIndexPosition[    762077,      14428]
+NotebookDataLength[    763013,      14460]
+NotebookOptionsPosition[    761833,      14416]
+NotebookOutlinePosition[    762166,      14431]
+CellTagsIndexPosition[    762123,      14428]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -106,12 +106,12 @@ Cell[TextData[{
      SubscriptBox["N", "3"], ",", 
      RowBox[{
       SubscriptBox["V", "3"], "..."}]}], "}"}], TraditionalForm]]],
- " where every group of six components rapresents the loads on a brick \
+ " where every group of six components represents the loads on a brick \
 ordered from left to right"
 }], "Text",
  CellChangeTimes->{{3.6826931669704123`*^9, 3.682693463201467*^9}, {
   3.682694561031879*^9, 3.682694568271435*^9}, {3.6835242410486717`*^9, 
-  3.6835242421385527`*^9}}],
+  3.6835242421385527`*^9}, {3.683911748659902*^9, 3.683911749032877*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -14451,14 +14451,14 @@ Cell[3190, 79, 224, 5, 32, "Input",
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[3463, 90, 165, 2, 65, "Section"],
-Cell[3631, 94, 712, 19, 55, "Text"],
-Cell[4346, 115, 1403, 26, 77, "Input"]
+Cell[3631, 94, 758, 19, 55, "Text"],
+Cell[4392, 115, 1403, 26, 77, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5786, 146, 146, 2, 65, "Section"],
+Cell[5832, 146, 146, 2, 65, "Section"],
 Cell[CellGroupData[{
-Cell[5957, 152, 263, 5, 32, "Input"],
-Cell[6223, 159, 755536, 14253, 545, 701455, 13365, "CachedBoxData", \
+Cell[6003, 152, 263, 5, 32, "Input"],
+Cell[6269, 159, 755536, 14253, 545, 701455, 13365, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]]
 }, Open  ]]

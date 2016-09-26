@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[    828548,      15453]
-NotebookOptionsPosition[    827044,      15398]
-NotebookOutlinePosition[    827377,      15413]
-CellTagsIndexPosition[    827334,      15410]
+NotebookDataLength[    828596,      15453]
+NotebookOptionsPosition[    827092,      15398]
+NotebookOutlinePosition[    827425,      15413]
+CellTagsIndexPosition[    827382,      15410]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -109,12 +109,12 @@ Cell[TextData[{
      SubscriptBox["N", "3"], ",", 
      RowBox[{
       SubscriptBox["V", "3"], "..."}]}], "}"}], TraditionalForm]]],
- " where every group of six components rapresents the loads on a brick \
+ " where every group of six components represents the loads on a brick \
 ordered from left to right"
 }], "Text",
  CellChangeTimes->{{3.6826931669704123`*^9, 3.682693463201467*^9}, {
   3.682694561031879*^9, 3.682694568271435*^9}, {3.6835242410486717`*^9, 
-  3.6835242421385527`*^9}}],
+  3.6835242421385527`*^9}, {3.683911681063519*^9, 3.6839116818724537`*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -15433,26 +15433,26 @@ Cell[3362, 82, 224, 5, 32, "Input",
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[3635, 93, 165, 2, 65, "Section"],
-Cell[3803, 97, 712, 19, 55, "Text"],
-Cell[4518, 118, 1749, 36, 99, "Input"]
+Cell[3803, 97, 760, 19, 55, "Text"],
+Cell[4566, 118, 1749, 36, 99, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[6304, 159, 146, 2, 65, "Section"],
+Cell[6352, 159, 146, 2, 65, "Section"],
 Cell[CellGroupData[{
-Cell[6475, 165, 870, 20, 143, "Input"],
-Cell[7348, 187, 715683, 13200, 733, "Output"]
+Cell[6523, 165, 870, 20, 143, "Input"],
+Cell[7396, 187, 715683, 13200, 733, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[723068, 13392, 97, 1, 32, "Input"],
-Cell[723168, 13395, 34523, 660, 447, "Output"]
+Cell[723116, 13392, 97, 1, 32, "Input"],
+Cell[723216, 13395, 34523, 660, 447, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[757728, 14060, 96, 1, 32, "Input"],
-Cell[757827, 14063, 34520, 661, 447, "Output"]
+Cell[757776, 14060, 96, 1, 32, "Input"],
+Cell[757875, 14063, 34520, 661, 447, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[792384, 14729, 127, 2, 32, "Input"],
-Cell[792514, 14733, 34502, 661, 447, "Output"]
+Cell[792432, 14729, 127, 2, 32, "Input"],
+Cell[792562, 14733, 34502, 661, 447, "Output"]
 }, Open  ]]
 }, Open  ]]
 }
