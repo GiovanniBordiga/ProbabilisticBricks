@@ -19,7 +19,7 @@ If you dowload the zip file you can unpack, rename and move the root folder to t
 
 ```Mathematica
 zipName = "ProbabilisticBricks-master.zip"; (*name of the zip file*)
-fromPath = FileNameJoin[{$HomeDirectory, "Desktop", zipName}]; (*current path of the zip file*)
+fromPath = FileNameJoin[{$HomeDirectory, "Desktop", zipName}]; (*current path of the zip file: be sure it's on your Desktop or replace "Desktop" with the appropriate location*)
 toPath = FileNameJoin[{$UserBaseDirectory, "Applications"}]; (*destination directory*)
 ExtractArchive[fromPath, toPath]; (*extract the code in the correct directory*)
 RenameDirectory[
