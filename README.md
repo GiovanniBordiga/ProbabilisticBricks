@@ -1,6 +1,8 @@
 # ProbabilisticBricks
 *Mathematica* Code for a Micromechanical Model of Masonry
 
+<img align="center" src="example.gif" alt="example.gif">
+
 ## Overview
 This is a project I developed for my Master's thesis in Civil Engineering at the [*University of Trento (Italy)*](http://www.dicam.unitn.it/).
 The aim is to create an implementation for the micromechanical model of masonry formulated in the thesis, which is an extension of the model developed by Bigoni and Noselli (2010) in the context of photoelasticity.
