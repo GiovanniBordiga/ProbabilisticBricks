@@ -505,7 +505,7 @@ AppendTo[blocks,{EdgeForm[{Black}],assignColorBlock[blockLoads,{i,j}],Rectangle[
 ];
 
 frictionRatio=Piecewise[{{Abs[Total[blockLoads[[12;;16;;2]]]]/(\[Mu] Total[blockLoads[[11;;15;;2]]]),Total[blockLoads[[11;;15;;2]]]>0}}];
-AppendTo[interfaces,{RGBColor[frictionRatio,0,0],Line[{ptBL,ptBR}]}];(*friction on the base*)
+AppendTo[interfaces,{AbsoluteThickness[2],RGBColor[frictionRatio,0,0],Line[{ptBL,ptBR}]}];(*friction on the base*)
 ];
 ];
 If[filter=="stress_state",
