@@ -1,4 +1,4 @@
-# ProbabilisticBricks [![Wolfram Language](https://img.shields.io/badge/Developed%20with-Wolfram%20Language-red)](https://www.wolfram.com/)
+# ProbabilisticBricks [![Wolfram Language](https://img.shields.io/badge/Made%20with-Wolfram%20Language-dd1100?logo=wolfram-language&labelColor=34495e)](https://www.wolfram.com/)
 
 *Mathematica* Code for a Micromechanical Model of Masonry
 
