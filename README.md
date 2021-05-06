@@ -1,4 +1,4 @@
-# ProbabilisticBricks [![Wolfram Language](https://img.shields.io/badge/Made%20with-Wolfram%20Language-dd1100?logo=wolfram-language&labelColor=34495e)](https://www.wolfram.com/)
+# ProbabilisticBricks [![Wolfram Language](https://img.shields.io/badge/Made%20with-Wolfram%20Language-dd1100?logo=wolfram-language&labelColor=34495e)](https://www.wolfram.com/) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FGiovanniBordiga%2FProbabilisticBricks&count_bg=%2327AE60&title_bg=%2334495E&icon=github.svg&icon_color=%23E7E7E7&title=Hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 *Mathematica* Code for a Micromechanical Model of Masonry
 
